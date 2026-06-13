@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
 import { SmartImage } from "@/components/media/SmartImage";
 import { RevealLines } from "@/components/typography/Reveal";
@@ -13,7 +13,7 @@ export function Gallery() {
   const progressRef = useRef<HTMLDivElement>(null);
   const [pinned, setPinned] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;

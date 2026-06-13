@@ -84,7 +84,7 @@ export function Booking() {
           <div className="lg:col-span-7">
             <AnimatePresence mode="wait">
               {done ? (
-                <Confirmation form={form} svc={svc} onReset={() => { setDone(false); setStep(0); }} />
+                <Confirmation key="done" form={form} svc={svc} onReset={() => { setDone(false); setStep(0); }} />
               ) : (
                 <motion.div
                   key="flow"
