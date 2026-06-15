@@ -47,8 +47,8 @@ export function Hero() {
   return (
     <section ref={ref} id="hero" className="relative h-[180vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* atmosphere */}
-        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_50%_10%,#0c1119_0%,#070a0f_45%,#050609_100%)]" />
+        {/* atmosphere — transparent toward the top so the global particle field shows behind the robot */}
+        <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_50%_-5%,transparent_0%,rgba(7,10,15,0.5)_45%,#050609_92%)]" />
         <div className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(80%_70%_at_50%_40%,black,transparent)]" />
 
         {/* 3D robot or static fallback */}
