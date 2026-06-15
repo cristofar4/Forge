@@ -7,66 +7,93 @@ import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { lerp, clamp } from "@/lib/utils";
 
-type Tracks = { mx: MotionValue<number>; my: MotionValue<number>; progress: MotionValue<number> };
+export type RobotMode = "idle" | "gate" | "dance" | "song" | "magic" | "ball" | "story" | "scan";
 
-/* ------------------------------- Robot bust ------------------------------- */
-function Robot({ mx, my, progress }: Tracks) {
+type Tracks = {
+  mx: MotionValue<number>;
+  my: MotionValue<number>;
+  bx: MotionValue<number>;
+  by: MotionValue<number>;
+  mode: RobotMode;
+};
+
+function Robot({ mx, my, bx, by, mode }: Tracks) {
   const root = useRef<THREE.Group>(null);
   const head = useRef<THREE.Group>(null);
   const ringA = useRef<THREE.Mesh>(null);
   const ringB = useRef<THREE.Mesh>(null);
   const ringC = useRef<THREE.Mesh>(null);
 
-  const shell = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#20283a", metalness: 0.92, roughness: 0.28, envMapIntensity: 1.4 }),
-    [],
-  );
-  const plate = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#05070b", metalness: 0.7, roughness: 0.12, envMapIntensity: 1.2 }),
-    [],
-  );
-  const accent = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#0a1622", metalness: 1, roughness: 0.3, envMapIntensity: 1.6 }),
-    [],
-  );
-  const glow = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#28d7fb", emissive: "#28d7fb", emissiveIntensity: 4, toneMapped: false }),
-    [],
-  );
+  const shell = useMemo(() => new THREE.MeshStandardMaterial({ color: "#20283a", metalness: 0.92, roughness: 0.28, envMapIntensity: 1.4 }), []);
+  const plate = useMemo(() => new THREE.MeshStandardMaterial({ color: "#05070b", metalness: 0.7, roughness: 0.12, envMapIntensity: 1.2 }), []);
+  const accent = useMemo(() => new THREE.MeshStandardMaterial({ color: "#0a1622", metalness: 1, roughness: 0.3, envMapIntensity: 1.6 }), []);
+  const glow = useMemo(() => new THREE.MeshStandardMaterial({ color: "#28d7fb", emissive: "#28d7fb", emissiveIntensity: 4, toneMapped: false }), []);
 
   useFrame((state, delta) => {
-    const px = mx.get();
-    const py = my.get();
-    const p = progress.get();
-
-    if (head.current) {
-      const ty = clamp(px * 0.6, -0.7, 0.7);
-      const tx = clamp(-py * 0.4, -0.4, 0.45);
-      head.current.rotation.y = lerp(head.current.rotation.y, ty, 0.08);
-      head.current.rotation.x = lerp(head.current.rotation.x, tx, 0.08);
-    }
-    if (root.current) {
-      root.current.rotation.y = lerp(root.current.rotation.y, px * 0.18, 0.05);
-      root.current.position.y = lerp(-0.3, -1.8, p);
-      const s = lerp(1, 0.86, p);
-      root.current.scale.setScalar(s);
-    }
     const t = state.clock.elapsedTime;
-    if (ringA.current) ringA.current.rotation.z = t * 0.3;
+
+    // ---- head ----
+    let hy: number, hx: number, hz = 0;
+    if (mode === "ball") {
+      hy = clamp(bx.get() * 0.8, -0.85, 0.85);
+      hx = clamp(by.get() * 0.6, -0.55, 0.6);
+    } else if (mode === "dance") {
+      hy = Math.sin(t * 3) * 0.32;
+      hx = Math.sin(t * 6) * 0.12;
+      hz = Math.sin(t * 6) * 0.18;
+    } else {
+      hy = clamp(mx.get() * 0.6, -0.7, 0.7);
+      hx = clamp(-my.get() * 0.4, -0.4, 0.45);
+    }
+    if (head.current) {
+      head.current.rotation.y = lerp(head.current.rotation.y, hy, 0.12);
+      head.current.rotation.x = lerp(head.current.rotation.x, hx, 0.12);
+      head.current.rotation.z = lerp(head.current.rotation.z, hz, 0.12);
+    }
+
+    // ---- body ----
+    if (root.current) {
+      const r = root.current;
+      if (mode === "dance") {
+        r.position.y = -0.3 + Math.abs(Math.sin(t * 6)) * 0.22;
+        r.rotation.y = Math.sin(t * 3) * 0.5;
+        r.rotation.z = Math.sin(t * 3) * 0.08;
+        r.scale.setScalar(1);
+      } else if (mode === "magic") {
+        r.rotation.y += delta * 1.5;
+        r.position.y = -0.3 + Math.sin(t * 2.4) * 0.18;
+        r.rotation.z = lerp(r.rotation.z, 0, 0.1);
+        r.scale.setScalar(1 + Math.sin(t * 5) * 0.03);
+      } else if (mode === "song") {
+        r.position.y = -0.3 + Math.sin(t * 4.2) * 0.12;
+        r.rotation.y = lerp(r.rotation.y, mx.get() * 0.18, 0.05);
+        r.rotation.z = lerp(r.rotation.z, Math.sin(t * 2) * 0.05, 0.1);
+        r.scale.setScalar(1);
+      } else {
+        const spin = mode === "ball" ? 0 : mx.get() * 0.18;
+        r.rotation.y = lerp(r.rotation.y, spin, 0.05);
+        r.position.y = lerp(r.position.y, -0.3, 0.06);
+        r.rotation.z = lerp(r.rotation.z, 0, 0.1);
+        r.scale.setScalar(1);
+      }
+    }
+
+    // ---- rings ----
+    const fast = mode === "dance" || mode === "magic" ? 2.4 : 1;
+    if (ringA.current) ringA.current.rotation.z = t * 0.3 * fast;
     if (ringB.current) {
       ringB.current.rotation.x = Math.PI / 2.4;
-      ringB.current.rotation.y = t * 0.4;
+      ringB.current.rotation.y = t * 0.4 * fast;
     }
     if (ringC.current) {
       ringC.current.rotation.x = Math.PI / 3;
-      ringC.current.rotation.z = -t * 0.22;
+      ringC.current.rotation.z = -t * 0.22 * fast;
     }
   });
 
   return (
-    <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.5}>
+    <Float speed={mode === "dance" ? 2.6 : 1.2} rotationIntensity={0.15} floatIntensity={mode === "dance" ? 1.1 : 0.5}>
       <group ref={root} position={[0, -0.3, 0]}>
-        {/* Holographic rings */}
         <mesh ref={ringA}>
           <torusGeometry args={[1.85, 0.008, 16, 120]} />
           <meshBasicMaterial color="#28d7fb" transparent opacity={0.5} toneMapped={false} />
@@ -80,23 +107,18 @@ function Robot({ mx, my, progress }: Tracks) {
           <meshBasicMaterial color="#8af2ff" transparent opacity={0.28} toneMapped={false} />
         </mesh>
 
-        {/* Head */}
         <group ref={head} position={[0, 0.75, 0]}>
           <RoundedBox args={[1.45, 1.55, 1.35]} radius={0.42} smoothness={6} material={shell} />
-          {/* faceplate */}
           <RoundedBox args={[1.12, 1.22, 0.4]} radius={0.32} smoothness={6} position={[0, -0.02, 0.62]} material={plate} />
-          {/* eyes */}
           <mesh position={[-0.3, 0.08, 0.86]} rotation={[0, 0, Math.PI / 2]} material={glow}>
             <capsuleGeometry args={[0.07, 0.18, 8, 16]} />
           </mesh>
           <mesh position={[0.3, 0.08, 0.86]} rotation={[0, 0, Math.PI / 2]} material={glow}>
             <capsuleGeometry args={[0.07, 0.18, 8, 16]} />
           </mesh>
-          {/* voice bar */}
           <mesh position={[0, -0.42, 0.84]} material={glow}>
             <boxGeometry args={[0.4, 0.03, 0.03]} />
           </mesh>
-          {/* side units */}
           <mesh position={[-0.78, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={accent}>
             <cylinderGeometry args={[0.22, 0.22, 0.16, 24]} />
           </mesh>
@@ -106,15 +128,12 @@ function Robot({ mx, my, progress }: Tracks) {
           <pointLight position={[0, 0.1, 1]} intensity={6} distance={3} color="#28d7fb" />
         </group>
 
-        {/* Neck */}
         <mesh position={[0, -0.15, 0]} material={accent}>
           <cylinderGeometry args={[0.28, 0.34, 0.5, 24]} />
         </mesh>
 
-        {/* Torso / shoulders */}
         <group position={[0, -1.25, 0]}>
           <RoundedBox args={[2.5, 1.4, 1.25]} radius={0.4} smoothness={5} material={shell} />
-          {/* chest core */}
           <mesh position={[0, 0.05, 0.66]} material={glow}>
             <torusGeometry args={[0.24, 0.04, 16, 48]} />
           </mesh>
@@ -122,7 +141,6 @@ function Robot({ mx, my, progress }: Tracks) {
             <circleGeometry args={[0.2, 32]} />
             <meshBasicMaterial color="#0a7ea4" transparent opacity={0.6} toneMapped={false} />
           </mesh>
-          {/* collar lines */}
           <RoundedBox args={[2.52, 0.06, 1.27]} radius={0.03} smoothness={4} position={[0, 0.45, 0]} material={glow} />
         </group>
       </group>
@@ -130,7 +148,6 @@ function Robot({ mx, my, progress }: Tracks) {
   );
 }
 
-/* ------------------------------- Energy dust ------------------------------ */
 function Dust({ count = 400 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null);
   const positions = useMemo(() => {
@@ -142,11 +159,9 @@ function Dust({ count = 400 }: { count?: number }) {
     }
     return arr;
   }, [count]);
-
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.03;
   });
-
   return (
     <points ref={ref}>
       <bufferGeometry>
@@ -173,7 +188,7 @@ export default function RobotScene(tracks: Tracks) {
     <Canvas
       dpr={[1, 1.8]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ position: [0, 0.2, 6], fov: 36 }}
+      camera={{ position: [0, 0.1, 6.2], fov: 36 }}
       className="!absolute inset-0"
     >
       <Suspense fallback={null}>
