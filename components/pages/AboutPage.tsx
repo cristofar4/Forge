@@ -33,7 +33,7 @@ export function AboutPage() {
         eyebrow="About Forge"
         titleLines={["We engineer the", "next species", "of machines."]}
         subtitle="Forge was founded in 2019 by a small team of roboticists with one belief. That robots should work in the world people actually live in, and that intelligence belongs in the body as much as the cloud."
-        image={img.team}
+        image={img.humanoidB}
       />
 
       {/* Mission */}

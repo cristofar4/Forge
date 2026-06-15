@@ -54,10 +54,8 @@ export function Navbar() {
             </Link>
           </Magnetic>
 
-          <ul className="hidden items-center gap-7 xl:flex">
-            {nav
-              .filter((n) => n.href !== "/")
-              .map((item) => (
+          <ul className="hidden items-center gap-5 xl:flex">
+            {nav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}

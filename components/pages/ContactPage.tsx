@@ -37,7 +37,7 @@ export function ContactPage() {
         eyebrow="Contact"
         titleLines={["Let us build", "together."]}
         subtitle="Tell us about your environment and what you want to achieve. Our deployment team will design a path from first demo to a fleet at work."
-        image={img.dataCore}
+        image={img.security}
       />
 
       <section className="relative bg-void py-20 md:py-28">

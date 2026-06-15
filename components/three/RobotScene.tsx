@@ -114,7 +114,7 @@ function Robot({ mx, my, bx, by, mode, phase, style }: Props) {
         lp(hd.rotation, "x", 0.32, 0.1);
       } else {
         // the dance, matched to the song style
-        const sty = style || "afro";
+        const sty = style === "trap" ? "hiphop" : style || "afro";
         const P =
           sty === "amapiano" ? { tempo: 4.0, sway: 0.55, hipZ: 0.14, bounce: 0.07, low: true, spin: false, knee: 0.6, nod: 0.12, lean: 0.12 }
           : sty === "hiphop" ? { tempo: 5.6, sway: 0.34, hipZ: 0.1, bounce: 0.15, low: false, spin: false, knee: 0.55, nod: 0.24, lean: 0 }
