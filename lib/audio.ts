@@ -1,68 +1,67 @@
-/** A self contained Web Audio melody, so the robot can play a song with no assets. */
+/** Self contained Web Audio songs, so the robot can perform with no asset files. */
 
-type Note = { f: number; t: number; d: number };
+type Pattern = { steps: number[]; tempo: number; type: OscillatorType; base: number };
 
-// A bright, looping arpeggio in A minor pentatonic.
-const A = 220;
-const seq: Note[] = [
-  { f: A, t: 0.0, d: 0.18 },
-  { f: A * 1.2, t: 0.2, d: 0.18 },
-  { f: A * 1.5, t: 0.4, d: 0.18 },
-  { f: A * 1.8, t: 0.6, d: 0.18 },
-  { f: A * 2, t: 0.8, d: 0.22 },
-  { f: A * 1.5, t: 1.05, d: 0.18 },
-  { f: A * 1.8, t: 1.25, d: 0.18 },
-  { f: A * 1.2, t: 1.45, d: 0.3 },
-];
-const BAR = 1.8;
+// Each song is a loop of semitone offsets over a base frequency, at its own tempo.
+const PATTERNS: Record<string, Pattern> = {
+  neon: { steps: [0, 7, 12, 7, 15, 12, 19, 12], tempo: 0.2, type: "triangle", base: 220 },
+  circuit: { steps: [0, 3, 7, 10, 12, 10, 7, 3], tempo: 0.17, type: "sawtooth", base: 196 },
+  gravity: { steps: [0, 0, 12, 0, 10, 0, 7, 5], tempo: 0.24, type: "square", base: 165 },
+  voltage: { steps: [0, 12, 7, 12, 15, 19, 15, 12], tempo: 0.15, type: "triangle", base: 247 },
+};
 
 export type SongHandle = { stop: () => void };
 
-export function playSong(onBeat?: () => void): SongHandle {
+const midi = (base: number, semi: number) => base * Math.pow(2, semi / 12);
+
+export function playSong(songId = "neon", onBeat?: () => void): SongHandle {
+  const p = PATTERNS[songId] ?? PATTERNS.neon;
   const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   const ctx = new Ctor();
   const master = ctx.createGain();
   master.gain.value = 0.0001;
-  master.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.1);
+  master.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.1);
   master.connect(ctx.destination);
 
   let stopped = false;
   let timer = 0;
+  const bar = p.steps.length * p.tempo;
 
   const scheduleBar = (start: number) => {
-    for (const n of seq) {
+    p.steps.forEach((semi, i) => {
       const osc = ctx.createOscillator();
       const g = ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.value = n.f;
-      const t0 = start + n.t;
+      osc.type = p.type;
+      osc.frequency.value = midi(p.base, semi + 12);
+      const t0 = start + i * p.tempo;
       g.gain.setValueAtTime(0.0001, t0);
-      g.gain.exponentialRampToValueAtTime(0.9, t0 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t0 + n.d);
+      g.gain.exponentialRampToValueAtTime(0.8, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + p.tempo * 0.9);
       osc.connect(g);
       g.connect(master);
       osc.start(t0);
-      osc.stop(t0 + n.d + 0.05);
-    }
-    // soft bass pulse
-    const bass = ctx.createOscillator();
-    const bg = ctx.createGain();
-    bass.type = "sine";
-    bass.frequency.value = A / 2;
-    bg.gain.setValueAtTime(0.0001, start);
-    bg.gain.exponentialRampToValueAtTime(0.35, start + 0.04);
-    bg.gain.exponentialRampToValueAtTime(0.0001, start + 0.5);
-    bass.connect(bg);
-    bg.connect(master);
-    bass.start(start);
-    bass.stop(start + 0.6);
+      osc.stop(t0 + p.tempo);
+    });
+    // kick on the down beat
+    const kick = ctx.createOscillator();
+    const kg = ctx.createGain();
+    kick.type = "sine";
+    kick.frequency.setValueAtTime(140, start);
+    kick.frequency.exponentialRampToValueAtTime(50, start + 0.12);
+    kg.gain.setValueAtTime(0.0001, start);
+    kg.gain.exponentialRampToValueAtTime(0.6, start + 0.01);
+    kg.gain.exponentialRampToValueAtTime(0.0001, start + 0.3);
+    kick.connect(kg);
+    kg.connect(master);
+    kick.start(start);
+    kick.stop(start + 0.35);
   };
 
   const loop = () => {
     if (stopped) return;
     scheduleBar(ctx.currentTime + 0.05);
     onBeat?.();
-    timer = window.setTimeout(loop, BAR * 1000);
+    timer = window.setTimeout(loop, bar * 1000);
   };
   loop();
 
@@ -80,3 +79,10 @@ export function playSong(onBeat?: () => void): SongHandle {
     },
   };
 }
+
+export const SONGS: { id: string; name: string; vibe: string }[] = [
+  { id: "neon", name: "Neon Pulse", vibe: "Uplifting synth" },
+  { id: "circuit", name: "Circuit Funk", vibe: "Groovy bassline" },
+  { id: "gravity", name: "Gravity Drop", vibe: "Heavy and slow" },
+  { id: "voltage", name: "Voltage", vibe: "Fast and bright" },
+];
