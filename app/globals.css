@@ -2,39 +2,36 @@
 @import "tw-animate-css";
 
 /* ----------------------------------------------------------------------------
-   CROWN & BLADE — Design System
-   A luxury, editorial, cinematic palette. Obsidian + bone + champagne gold.
+   FORGE — Design System
+   Deep void black, electric cyan and blue energy, glass morphism, holographics.
 ---------------------------------------------------------------------------- */
 @theme {
-  /* Surfaces — near-black with subtle warmth */
-  --color-obsidian: #08080a;
-  --color-obsidian-soft: #0d0d10;
-  --color-charcoal: #131317;
-  --color-graphite: #1b1b20;
-  --color-smoke: #2a2a31;
+  /* Surfaces */
+  --color-void: #050609;
+  --color-abyss: #07090e;
+  --color-carbon: #0b0e14;
+  --color-slate-deep: #11151d;
+  --color-steel: #1a2030;
 
-  /* Text — warm bone / parchment */
-  --color-bone: #f2ecdc;
-  --color-bone-soft: #d9d1bf;
-  --color-bone-dim: #948c79;
+  /* Text — cool ice */
+  --color-ice: #e9f1f8;
+  --color-mist: #9fb0c3;
+  --color-fade: #5f6e80;
 
-  /* Accent — champagne gold */
-  --color-gold: #c8a24b;
-  --color-gold-light: #e7cf91;
-  --color-gold-deep: #8a6c2c;
+  /* Energy — cyan / blue */
+  --color-cyan: #28d7fb;
+  --color-cyan-bright: #8af2ff;
+  --color-cyan-deep: #0a7ea4;
+  --color-azure: #3b9dff;
+  --color-electric: #2563eb;
+  --color-violet: #7c6bff;
 
-  /* Secondary accent — deep oxblood */
-  --color-oxblood: #531c1c;
-
-  /* Fonts (wired to next/font variables in layout.tsx) */
-  --font-display: var(--font-bodoni), ui-serif, Georgia, serif;
-  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  /* Fonts (wired in layout.tsx) */
+  --font-display: var(--font-space), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Signature easing */
-  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ----------------------------------------------------------------------------
@@ -42,28 +39,25 @@
 ---------------------------------------------------------------------------- */
 @layer base {
   * {
-    border-color: color-mix(in oklab, var(--color-bone) 12%, transparent);
+    border-color: color-mix(in oklab, var(--color-ice) 9%, transparent);
   }
 
   html {
-    /* Lenis controls scrolling; native smooth scroll must be off. */
     scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    background-color: var(--color-obsidian);
+    background-color: var(--color-void);
   }
 
   body {
-    background-color: var(--color-obsidian);
-    color: var(--color-bone);
+    background-color: var(--color-void);
+    color: var(--color-ice);
     font-family: var(--font-sans);
     overflow-x: clip;
-    font-feature-settings: "ss01", "cv01";
   }
 
   ::selection {
-    background: var(--color-gold);
-    color: var(--color-obsidian);
+    background: var(--color-cyan);
+    color: var(--color-void);
   }
 
   /* Lenis */
@@ -78,22 +72,20 @@
     overflow: clip;
   }
 
-  /* Slim, gilded scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-obsidian);
+    background: var(--color-void);
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--color-gold-deep) 70%, black);
+    background: color-mix(in oklab, var(--color-cyan-deep) 80%, black);
     border-radius: 999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-gold-deep);
+    background: var(--color-cyan-deep);
   }
 
-  /* Hide the native cursor when our bespoke cursor is active (fine pointers). */
   @media (pointer: fine) {
     html.custom-cursor,
     html.custom-cursor * {
@@ -108,46 +100,63 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }
 
 /* ----------------------------------------------------------------------------
-   Typography helpers
+   Components
 ---------------------------------------------------------------------------- */
 @layer components {
-  .container-luxe {
+  .container-x {
     width: 100%;
-    max-width: 96rem; /* 1536px */
+    max-width: 90rem;
     margin-inline: auto;
     padding-inline: 1.5rem;
   }
   @media (min-width: 768px) {
-    .container-luxe {
-      padding-inline: 3rem;
+    .container-x {
+      padding-inline: 2.5rem;
     }
   }
   @media (min-width: 1280px) {
-    .container-luxe {
-      padding-inline: 5rem;
+    .container-x {
+      padding-inline: 4rem;
     }
   }
 
-  /* Tracked-out uppercase label — the editorial "eyebrow". */
   .eyebrow {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    letter-spacing: 0.42em;
+    letter-spacing: 0.34em;
     text-transform: uppercase;
-    color: var(--color-bone-dim);
+    color: var(--color-cyan);
   }
 
   .display {
     font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 0.92;
-    letter-spacing: -0.015em;
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+
+  /* Glass morphism panel */
+  .glass {
+    background: linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--color-ice) 7%, transparent),
+      color-mix(in oklab, var(--color-ice) 2%, transparent)
+    );
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border: 1px solid color-mix(in oklab, var(--color-ice) 10%, transparent);
+  }
+
+  .glass-strong {
+    background: color-mix(in oklab, var(--color-carbon) 72%, transparent);
+    backdrop-filter: blur(22px) saturate(1.4);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid color-mix(in oklab, var(--color-cyan) 14%, transparent);
   }
 }
 
@@ -155,38 +164,61 @@
    Utilities
 ---------------------------------------------------------------------------- */
 @layer utilities {
-  /* Champagne foil text */
-  .text-gold-foil {
+  /* Energy gradient text */
+  .text-energy {
     background: linear-gradient(
-      96deg,
-      var(--color-gold-deep) 0%,
-      var(--color-gold-light) 28%,
-      #fff7e2 46%,
-      var(--color-gold) 64%,
-      var(--color-gold-deep) 100%
+      100deg,
+      var(--color-cyan-bright) 0%,
+      var(--color-cyan) 35%,
+      var(--color-azure) 70%,
+      var(--color-electric) 100%
     );
-    background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  .text-gold-foil-anim {
-    animation: foil-pan 7s linear infinite;
+  .glow-cyan {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-cyan) 40%, transparent),
+      0 0 30px -6px color-mix(in oklab, var(--color-cyan) 60%, transparent),
+      0 0 60px -20px color-mix(in oklab, var(--color-cyan) 80%, transparent);
   }
 
-  /* Soft radial vignette overlay (apply to a ::before-style fixed element) */
+  .text-glow {
+    text-shadow: 0 0 24px color-mix(in oklab, var(--color-cyan) 55%, transparent);
+  }
+
+  /* Holographic dotted/line grid background */
+  .bg-grid {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--color-ice) 4%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ice) 4%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 64px 64px;
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--color-ice) 10%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 26px 26px;
+  }
+
   .vignette {
     background: radial-gradient(
       120% 120% at 50% 30%,
-      transparent 40%,
-      rgba(0, 0, 0, 0.55) 100%
+      transparent 38%,
+      rgba(0, 0, 0, 0.6) 100%
     );
-  }
-
-  /* Clip masks used for line reveals */
-  .clip-reveal {
-    clip-path: inset(0 0 100% 0);
   }
 
   .hairline {
@@ -194,25 +226,18 @@
     background: linear-gradient(
       90deg,
       transparent,
-      color-mix(in oklab, var(--color-gold) 60%, transparent),
+      color-mix(in oklab, var(--color-cyan) 55%, transparent),
       transparent
     );
   }
 
-  .glass {
-    background: color-mix(in oklab, var(--color-obsidian) 55%, transparent);
-    backdrop-filter: blur(18px) saturate(1.2);
-    -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  }
-
-  .text-shadow-luxe {
-    text-shadow: 0 1px 40px rgba(0, 0, 0, 0.6);
+  .mask-fade-y {
+    mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
   }
 
   .perspective-1000 {
     perspective: 1000px;
   }
-
   .preserve-3d {
     transform-style: preserve-3d;
   }
@@ -224,45 +249,67 @@
 /* ----------------------------------------------------------------------------
    Keyframes
 ---------------------------------------------------------------------------- */
-@keyframes foil-pan {
-  to {
-    background-position: -220% center;
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
   }
 }
-
-@keyframes marquee-x {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes float-soft {
+@keyframes float-y {
   0%,
   100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
   }
 }
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.7;
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
-  70% {
-    transform: scale(1.6);
-    opacity: 0;
+}
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
   }
   100% {
-    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+@keyframes grid-pan {
+  to {
+    background-position: 64px 64px;
+  }
+}
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.25;
   }
 }
 
 .animate-marquee {
-  animation: marquee-x 28s linear infinite;
+  animation: marquee-x 32s linear infinite;
 }
-.animate-float-soft {
-  animation: float-soft 6s ease-in-out infinite;
+.animate-float-y {
+  animation: float-y 6s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
 }

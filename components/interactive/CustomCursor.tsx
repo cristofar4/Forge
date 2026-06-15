@@ -14,8 +14,8 @@ export function CustomCursor() {
   const y = useMotionValue(-100);
   const ringX = useSpring(x, { stiffness: 350, damping: 38, mass: 0.4 });
   const ringY = useSpring(y, { stiffness: 350, damping: 38, mass: 0.4 });
-  const dotX = useSpring(x, { stiffness: 1100, damping: 60 });
-  const dotY = useSpring(y, { stiffness: 1100, damping: 60 });
+  const dotX = useSpring(x, { stiffness: 1200, damping: 60 });
+  const dotY = useSpring(y, { stiffness: 1200, damping: 60 });
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -57,23 +57,23 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
-  const ringSize = variant === "label" ? 84 : variant === "hover" ? 56 : 34;
+  const ringSize = variant === "label" ? 86 : variant === "hover" ? 54 : 30;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[80] hidden md:block">
-      {/* Trailing ring */}
-      <motion.div
-        style={{ x: ringX, y: ringY }}
-        className="absolute left-0 top-0"
-      >
+      <motion.div style={{ x: ringX, y: ringY }} className="absolute left-0 top-0">
         <motion.div
           animate={{
             width: ringSize,
             height: ringSize,
             backgroundColor:
-              variant === "label" ? "rgba(200,162,75,0.95)" : "rgba(200,162,75,0)",
+              variant === "label" ? "rgba(40,215,251,0.95)" : "rgba(40,215,251,0)",
             borderColor:
-              variant === "label" ? "rgba(200,162,75,0)" : "rgba(200,162,75,0.55)",
+              variant === "label" ? "rgba(40,215,251,0)" : "rgba(40,215,251,0.6)",
+            boxShadow:
+              variant === "default"
+                ? "0 0 0px rgba(40,215,251,0)"
+                : "0 0 22px rgba(40,215,251,0.45)",
           }}
           transition={{ type: "spring", stiffness: 320, damping: 26 }}
           className="grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border"
@@ -84,7 +84,7 @@ export function CustomCursor() {
                 initial={{ opacity: 0, scale: 0.6 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
-                className="font-mono text-[9px] uppercase tracking-[0.2em] text-obsidian"
+                className="font-mono text-[9px] uppercase tracking-[0.2em] text-void"
               >
                 {label}
               </motion.span>
@@ -93,14 +93,10 @@ export function CustomCursor() {
         </motion.div>
       </motion.div>
 
-      {/* Precise dot */}
-      <motion.div
-        style={{ x: dotX, y: dotY }}
-        className="absolute left-0 top-0"
-      >
+      <motion.div style={{ x: dotX, y: dotY }} className="absolute left-0 top-0">
         <motion.div
           animate={{ opacity: variant === "default" ? 1 : 0 }}
-          className="h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold"
+          className="h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan shadow-[0_0_10px_rgba(40,215,251,0.9)]"
         />
       </motion.div>
     </div>

@@ -13,15 +13,15 @@ type Props = {
 };
 
 /**
- * Plays a real ambient video over a real poster image. If the video can't be
- * fetched, the poster carries the frame — never a blank box.
+ * Plays a real ambient video over a real poster image. If the video cannot be
+ * fetched, the poster carries the frame, never a blank box.
  */
 export function AmbientVideo({ src, poster, alt, className, reveal = true }: Props) {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className={cn("relative overflow-hidden bg-charcoal", className)}>
+    <div className={cn("relative overflow-hidden bg-carbon", className)}>
       <SmartImage
         src={poster}
         alt={alt}
@@ -46,7 +46,7 @@ export function AmbientVideo({ src, poster, alt, className, reveal = true }: Pro
           <source src={src} type="video/mp4" />
         </video>
       )}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-obsidian/70 via-transparent to-obsidian/20" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-void/20" />
     </div>
   );
 }

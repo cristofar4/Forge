@@ -1,25 +1,23 @@
-import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { Services } from "@/components/sections/Services";
-import { Gallery } from "@/components/sections/Gallery";
-import { Team } from "@/components/sections/Team";
-import { Booking } from "@/components/sections/Booking";
-import { Testimonials } from "@/components/sections/Testimonials";
-import { Contact } from "@/components/sections/Contact";
+import { IntroLoader } from "@/components/sections/home/IntroLoader";
+import { Hero } from "@/components/sections/home/Hero";
+import { Stats } from "@/components/sections/home/Stats";
+import { Capabilities } from "@/components/sections/home/Capabilities";
+import { FeaturedRobots } from "@/components/sections/home/FeaturedRobots";
+import { SolutionsPreview } from "@/components/sections/home/SolutionsPreview";
+import { ResearchPreview } from "@/components/sections/home/ResearchPreview";
 import { Marquee } from "@/components/layout/Marquee";
 
 export default function Home() {
   return (
     <>
+      <IntroLoader />
       <Hero />
-      <About />
+      <Stats />
+      <Capabilities />
       <Marquee />
-      <Services />
-      <Gallery />
-      <Team />
-      <Booking />
-      <Testimonials />
-      <Contact />
+      <FeaturedRobots />
+      <SolutionsPreview />
+      <ResearchPreview />
     </>
   );
 }

@@ -1,103 +1,95 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { navItems, site } from "@/lib/site";
+import { nav, site } from "@/lib/site";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
-import { LuxeButton } from "@/components/interactive/LuxeButton";
+import { GlowButton } from "@/components/interactive/GlowButton";
 import { Magnetic } from "@/components/interactive/Magnetic";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
+  const pathname = usePathname();
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { scrollTo, stop, start } = useSmoothScroll();
+  const { stop, start } = useSmoothScroll();
 
-  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 50));
 
-  const go = (href: string) => {
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const close = () => {
     setOpen(false);
     start();
-    setTimeout(() => scrollTo(href, -10), 60);
   };
-
-  const toggle = () => {
+  const toggle = () =>
     setOpen((o) => {
       const next = !o;
       next ? stop() : start();
       return next;
     });
-  };
 
   return (
     <>
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          scrolled
-            ? "glass border-b border-bone/10 py-3"
-            : "border-b border-transparent py-5",
+          scrolled ? "glass-strong py-3" : "border-b border-transparent py-5",
         )}
       >
-        <nav className="container-luxe flex items-center justify-between">
-          {/* Wordmark */}
+        <nav className="container-x flex items-center justify-between">
           <Magnetic strength={0.25}>
-            <button
-              onClick={() => go("#top")}
-              data-cursor
-              className="flex items-baseline gap-2"
-            >
-              <span className="font-display text-xl tracking-tight text-bone">
-                Crown
+            <Link href="/" data-cursor className="flex items-center gap-2.5">
+              <span className="grid h-7 w-7 place-items-center rounded-md bg-cyan/15 ring-1 ring-cyan/40">
+                <span className="h-2.5 w-2.5 rounded-sm bg-cyan shadow-[0_0_10px_rgba(40,215,251,0.9)]" />
               </span>
-              <span className="text-gold">&amp;</span>
-              <span className="font-display text-xl tracking-tight text-bone">
-                Blade
+              <span className="font-display text-lg font-semibold tracking-[0.22em] text-ice">
+                {site.wordmark}
               </span>
-            </button>
+            </Link>
           </Magnetic>
 
-          {/* Desktop links */}
-          <ul className="hidden items-center gap-8 lg:flex">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <button
-                  onClick={() => go(item.href)}
-                  data-cursor
-                  className="group relative flex items-center gap-1.5 py-1 text-sm text-bone-soft transition-colors hover:text-bone"
-                >
-                  <span className="font-mono text-[0.6rem] text-gold/70">
-                    {item.index}
-                  </span>
-                  {item.label}
-                  <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-gold transition-all duration-500 group-hover:w-full" />
-                </button>
-              </li>
-            ))}
+          <ul className="hidden items-center gap-7 xl:flex">
+            {nav
+              .filter((n) => n.href !== "/")
+              .map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    data-cursor
+                    className={cn(
+                      "group relative py-1 text-[0.82rem] transition-colors",
+                      isActive(item.href) ? "text-cyan" : "text-mist hover:text-ice",
+                    )}
+                  >
+                    {item.label}
+                    <span
+                      className={cn(
+                        "absolute -bottom-0.5 left-0 h-px bg-cyan transition-all duration-500",
+                        isActive(item.href) ? "w-full" : "w-0 group-hover:w-full",
+                      )}
+                    />
+                  </Link>
+                </li>
+              ))}
           </ul>
 
           <div className="flex items-center gap-3">
             <div className="hidden sm:block">
-              <LuxeButton
-                onClick={() => go("#booking")}
-                cursorText="Reserve"
-                className="px-6 py-3 text-[0.7rem]"
-              >
-                Book a Chair
-              </LuxeButton>
+              <GlowButton href="/contact" variant="ghost" cursorText="Demo" className="px-5 py-3 text-[0.7rem]">
+                Book a demo
+              </GlowButton>
             </div>
             <button
               onClick={toggle}
               data-cursor
               aria-label="Menu"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-bone/15 text-bone lg:hidden"
+              className="grid h-11 w-11 place-items-center rounded-full border border-ice/15 text-ice xl:hidden"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -105,43 +97,41 @@ export function Navbar() {
         </nav>
       </header>
 
-      {/* Full-screen mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
             exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-40 flex flex-col justify-center bg-obsidian px-8 lg:hidden"
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 flex flex-col justify-center bg-void/95 px-8 backdrop-blur-xl xl:hidden"
           >
-            <ul className="space-y-2">
-              {navItems.map((item, i) => (
+            <ul className="space-y-1">
+              {nav.map((item, i) => (
                 <li key={item.href} className="overflow-hidden">
-                  <motion.button
+                  <motion.div
                     initial={{ y: "110%" }}
                     animate={{ y: "0%" }}
-                    transition={{
-                      delay: 0.2 + i * 0.07,
-                      duration: 0.7,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    onClick={() => go(item.href)}
-                    className="flex items-baseline gap-4 text-bone"
+                    transition={{ delay: 0.15 + i * 0.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <span className="font-mono text-xs text-gold">
-                      {item.index}
-                    </span>
-                    <span className="display text-5xl sm:text-6xl">
-                      {item.label}
-                    </span>
-                  </motion.button>
+                    <Link
+                      href={item.href}
+                      onClick={close}
+                      className={cn(
+                        "flex items-baseline gap-4",
+                        isActive(item.href) ? "text-cyan" : "text-ice",
+                      )}
+                    >
+                      <span className="font-mono text-xs text-cyan">{item.index}</span>
+                      <span className="display text-4xl sm:text-5xl">{item.label}</span>
+                    </Link>
+                  </motion.div>
                 </li>
               ))}
             </ul>
-            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-2 text-xs uppercase tracking-[0.2em] text-bone-dim">
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs uppercase tracking-[0.2em] text-fade">
               {site.socials.map((s) => (
-                <a key={s.label} href={s.href} className="hover:text-gold">
+                <a key={s.label} href={s.href} className="hover:text-cyan">
                   {s.label}
                 </a>
               ))}

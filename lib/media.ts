@@ -1,95 +1,70 @@
 /**
- * Real photography & video, referenced from public CDNs and loaded directly in
- * the visitor's browser. The build sandbox is network-restricted, so assets are
- * not vendored locally; every <SmartImage> degrades to a branded fallback panel
- * if a URL is ever unreachable, so the composition never breaks.
+ * Real photography referenced from public CDNs and loaded directly in the
+ * visitor's browser. Each image flows through <SmartImage>, which renders a
+ * branded glass fallback if a URL is ever unreachable, so the layout never breaks.
  */
 
-/** Build a tuned Unsplash delivery URL. */
-const ux = (id: string, w = 1600, h?: number) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=${w}${
-    h ? `&h=${h}` : ""
-  }`;
+const ux = (id: string, w = 1600) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=${w}`;
 
-export const images = {
-  // Atmosphere & craft
-  shopInterior: ux("1585747860715-2ba37e788b70", 1800),
-  barberChair: ux("1521590832167-7bcbfaaa1ca4", 1600),
-  razorShave: ux("1599351431202-1e0f0137899a", 1600),
-  beardTrim: ux("1605497788044-5a32c7078486", 1400),
-  clippers: ux("1622286342621-4bd786c2447c", 1400),
-  tools: ux("1503951914875-452162b0f3f1", 1600),
-  pomade: ux("1621607512214-68297480165e", 1200),
-  detailHands: ux("1567894340315-735d7c361db0", 1400),
+export const img = {
+  // Atmosphere
+  heroAtmos: ux("1535378620166-273708d44e4c", 2000),
+  circuit: ux("1518770660439-4636190af475", 1800),
+  dataCore: ux("1620712943543-bcc4688e7485", 1600),
 
-  // Atelier / about
-  craftWide: ux("1622287162716-f311baa1a2b8", 2000),
-  portraitMood: ux("1503443207922-dff7d543fd0e", 1400),
+  // Robots / humanoids
+  humanoid: ux("1561557944-6e7860d1a7eb", 1600),
+  humanoidB: ux("1620712943543-bcc4688e7485", 1400),
+  armFactory: ux("1565514020179-026b92b84bb6", 1600),
+  cobot: ux("1581092160562-40aa08e78837", 1600),
+  drone: ux("1473968512647-3e447244af8f", 1400),
+  medical: ux("1581595219315-a187dd40c322", 1500),
+  logistics: ux("1586528116311-ad8dd3c8310d", 1600),
+  security: ux("1563207153-f403bf289096", 1400),
+
+  // Research / lab
+  lab: ux("1581091226825-a6a2a5aee158", 1600),
+  vision: ux("1535378917042-10a22c95931a", 1500),
+  neural: ux("1551288049-bebda4e38f71", 1500),
+  engineer: ux("1581092918056-0c4c3acd3789", 1500),
+
+  // Smart cities / industry
+  city: ux("1480714378408-67cf0d13bc1b", 1800),
+  factory: ux("1504917595217-d4dc5ebe6122", 1600),
+
+  // People / culture
+  team: ux("1522071820081-009f0129c71c", 1600),
+  culture: ux("1531482615713-2afd69097998", 1600),
+  workshop: ux("1559136555-9303baea8ebd", 1500),
 } as const;
 
-/** Editorial gallery — shot like a fashion campaign. */
-export const galleryShots: {
+export type GalleryItem = {
   id: string;
   src: string;
   title: string;
-  meta: string;
+  category: "Humanoid" | "Industrial" | "Research" | "Field";
   tall?: boolean;
-}[] = [
-  {
-    id: "g1",
-    src: ux("1599351431202-1e0f0137899a", 1400),
-    title: "The Straight Razor",
-    meta: "Ritual № 01",
-    tall: true,
-  },
-  {
-    id: "g2",
-    src: ux("1605497788044-5a32c7078486", 1400),
-    title: "Sculpted Beard",
-    meta: "Form & Line",
-  },
-  {
-    id: "g3",
-    src: ux("1503951914875-452162b0f3f1", 1400),
-    title: "Heritage Tools",
-    meta: "Steel & Bone",
-  },
-  {
-    id: "g4",
-    src: ux("1521590832167-7bcbfaaa1ca4", 1400),
-    title: "The Throne",
-    meta: "Mid-Century Leather",
-    tall: true,
-  },
-  {
-    id: "g5",
-    src: ux("1622286342621-4bd786c2447c", 1400),
-    title: "Precision Fade",
-    meta: "Tapered Geometry",
-  },
-  {
-    id: "g6",
-    src: ux("1585747860715-2ba37e788b70", 1400),
-    title: "The Atelier",
-    meta: "Mayfair Light",
-  },
-  {
-    id: "g7",
-    src: ux("1567894340315-735d7c361db0", 1400),
-    title: "Finishing Touch",
-    meta: "Detail Work",
-    tall: true,
-  },
-  {
-    id: "g8",
-    src: ux("1622287162716-f311baa1a2b8", 1400),
-    title: "House Pomade",
-    meta: "Signature Hold",
-  },
+  wide?: boolean;
+};
+
+export const galleryItems: GalleryItem[] = [
+  { id: "p1", src: img.humanoid, title: "Atlas X in motion", category: "Humanoid", tall: true },
+  { id: "p2", src: img.armFactory, title: "Titan assembly cell", category: "Industrial", wide: true },
+  { id: "p3", src: img.lab, title: "Perception lab", category: "Research" },
+  { id: "p4", src: img.cobot, title: "Collaborative line", category: "Industrial" },
+  { id: "p5", src: img.vision, title: "Machine vision array", category: "Research", tall: true },
+  { id: "p6", src: img.logistics, title: "Logistics One fleet", category: "Field", wide: true },
+  { id: "p7", src: img.humanoidB, title: "Nova interaction study", category: "Humanoid" },
+  { id: "p8", src: img.drone, title: "Aerial survey unit", category: "Field" },
+  { id: "p9", src: img.neural, title: "Neural core training", category: "Research" },
+  { id: "p10", src: img.factory, title: "Munich gigafactory", category: "Industrial", tall: true },
+  { id: "p11", src: img.security, title: "Guardian night patrol", category: "Field" },
+  { id: "p12", src: img.engineer, title: "Calibration bay", category: "Research", wide: true },
 ];
 
-/** Ambient craft video. Plays over a real poster; degrades to poster if blocked. */
+/** Real ambient video over a real poster; degrades to the poster if blocked. */
 export const ambientVideo = {
-  src: "https://assets.mixkit.co/videos/preview/mixkit-barber-cutting-the-hair-of-a-client-43933-large.mp4",
-  poster: images.razorShave,
+  src: "https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-working-in-a-factory-44900-large.mp4",
+  poster: img.armFactory,
 };

@@ -10,7 +10,7 @@ type Props = {
   titleClassName?: string;
 };
 
-/** Shared editorial section header: eyebrow + index rule + display title. */
+/** Shared section header: eyebrow + index rule + display title. */
 export function SectionHeading({
   index,
   eyebrow,
@@ -27,15 +27,15 @@ export function SectionHeading({
       )}
     >
       <div className="eyebrow flex items-center gap-3">
-        {index && <span className="text-gold">{index}</span>}
-        <span className="h-px w-8 bg-gold/40" />
+        {index && <span className="text-cyan">{index}</span>}
+        <span className="h-px w-8 bg-cyan/40" />
         <span>{eyebrow}</span>
       </div>
       <RevealLines
         lines={lines}
         as="h2"
         className={cn(
-          "display mt-6 text-balance text-4xl text-bone sm:text-5xl md:text-6xl lg:text-7xl",
+          "display mt-6 text-balance text-4xl text-ice sm:text-5xl md:text-6xl",
           titleClassName,
         )}
       />

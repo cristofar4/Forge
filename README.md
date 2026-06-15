@@ -1,40 +1,52 @@
-# Crown & Blade — Luxury Barbershop Experience
+# Forge — Intelligent Machines for the Physical World
 
-> _The Art of the Modern Gentleman._
+> A world class, multi page website for a futuristic robotics company.
 
-An Awwwards-calibre, cinematic website for a fictional Mayfair grooming atelier.
-Built as one continuous scroll-driven journey: a 3D hero centrepiece, GSAP scene
-choreography, immersive transitions, editorial typography and luxury micro-interactions.
+Forge is a fictional global robotics company that designs intelligent robots for
+industry, healthcare, logistics, security, manufacturing and smart cities. This
+project is the complete marketing site: eight pages, a 3D humanoid hero, a voice
+enabled AI assistant and cinematic motion throughout.
 
 ## Tech stack
 
-| Concern            | Tool                                             |
-| ------------------ | ------------------------------------------------ |
-| Framework          | **Next.js 16** (App Router, Turbopack)           |
-| Language           | **TypeScript**                                   |
-| Styling            | **Tailwind CSS v4** (CSS-first `@theme` tokens)  |
-| 3D                 | **Three.js · React Three Fiber · @react-three/drei** |
-| Scroll timelines   | **GSAP + ScrollTrigger**                         |
-| Component motion   | **Framer Motion**                                |
-| Smooth scroll      | **Lenis** (synced to GSAP ticker)                |
-| UI primitives      | **shadcn-style** components (Radix + CVA)        |
-| Fonts              | Bodoni Moda · Cormorant · Geist (`next/font`)    |
+| Concern          | Tool                                              |
+| ---------------- | ------------------------------------------------- |
+| Framework        | **Next.js 16** (App Router, Turbopack)            |
+| Language         | **TypeScript**                                    |
+| Styling          | **Tailwind CSS v4** (CSS first `@theme` tokens)   |
+| 3D               | **Three.js · React Three Fiber · @react-three/drei** |
+| Scroll timelines | **GSAP + ScrollTrigger**                          |
+| Component motion | **Framer Motion**                                 |
+| Smooth scroll    | **Lenis** (synced to the GSAP ticker)             |
+| UI primitives    | **shadcn style** components (Radix + CVA)         |
+| Fonts            | Space Grotesk · Geist · Geist Mono (`next/font`)  |
 
-## The experience
+> The spec called for Next.js 15. This repository is intentionally pinned to
+> Next 16 (see `AGENTS.md`), a fully compatible superset, so the site is built
+> on 16. Pinning back to 15 is a one line `package.json` change if required.
 
-| Section | Signature animation |
-| ------- | ------------------- |
-| **Hero** | Procedural metallic straight-razor in a studio-lit 3D scene with drifting gold dust; the blade opens/closes and the camera dollies as you scroll. Letter-masked headline choreography. |
-| **About** | Editorial manifesto, parallax + real ambient video, animated stat counters, the four-step "Ritual". |
-| **Services** | Interactive configurator — hover a service to crossfade a cinematic preview with live pricing & inclusions. |
-| **Gallery** | GSAP-pinned **horizontal** scroll reel, shot like a fashion campaign, with a progress rail. |
-| **Team** | "Celebrity artist" cards with 3D pointer-tilt, gold glare and reveal-on-hover bios. |
-| **Booking** | Premium 4-step reservation flow with a live summary panel and an animated confirmation. |
-| **Testimonials** | Auto-advancing cinematic quotes with word-level reveals and a progress timeline. |
-| **Contact** | Editorial visit panel, hours, location card, and an oversized closing wordmark. |
+## Pages
 
-Throughout: a bespoke magnetic cursor, magnetic CTAs, film grain + vignette, a
-gilded scroll-progress hairline, and full `prefers-reduced-motion` fallbacks.
+`Home · About · Robots · Solutions · Research · Gallery · Careers · Contact`
+
+| Page | Highlights |
+| ---- | ---------- |
+| **Home** | Full screen 3D humanoid that tracks the cursor, holographic HUD, animated particle field, GSAP cinematic intro, scroll reveals and an interactive stats counter. |
+| **About** | Mission, principles, a scroll linked company timeline and animated numbers. |
+| **Robots** | Six machines with real images, full specifications, capabilities and expandable detail on interactive 3D tilt cards. |
+| **Solutions** | Six industries, each a cinematic section with outcomes and the robots deployed. |
+| **Research** | A futuristic lab: four pillars including a live machine vision scan overlay, plus an interactive milestones timeline. |
+| **Gallery** | Masonry layout with category filtering, hover reveals and a keyboard navigable lightbox. |
+| **Careers** | Culture, benefits, an animated recruitment timeline, open roles and a working application form. |
+| **Contact** | Working contact form, an interactive office map, support channels and a live chat trigger. |
+
+## The AI assistant (Vex)
+
+A floating assistant is present on every page. It opens with a smooth animation,
+keeps a chat history, answers questions with intelligent predefined responses,
+speaks replies with the browser Speech Synthesis API and accepts voice input
+through the Web Speech Recognition API where supported. It degrades gracefully
+when those browser APIs are unavailable.
 
 ## Getting started
 
@@ -47,28 +59,25 @@ npm run start    # serve the production build
 
 ## A note on media
 
-Photography is loaded **directly in the browser** from public CDNs (Unsplash) and
-real hosted video, rather than vendored into the repo — the asset URLs live in
-[`lib/media.ts`](lib/media.ts). Every image goes through
-[`SmartImage`](components/media/SmartImage.tsx), which renders a branded
-obsidian/gold fallback panel while loading or if a URL is ever unreachable, so the
-composition never shows a broken image. To use your own art direction, swap the
-URLs in `lib/media.ts` and `lib/content.ts` (or drop files into `public/`).
-
-The 3D hero is fully procedural (no external assets), so the first-impression
-centrepiece always renders.
+Photography is loaded directly in the browser from public CDNs (Unsplash) and a
+real hosted video. Asset URLs live in `lib/media.ts`. Every image flows through
+`SmartImage`, which renders a branded carbon and cyan fallback while loading or if
+a URL is ever unreachable, so the layout never breaks. The 3D hero is fully
+procedural and needs no external assets, so the first impression always renders.
 
 ## Project structure
 
 ```
-app/                     # layout, page composition, global styles, icon
+app/                     # routes (one folder per page), layout, global styles
 components/
-  sections/              # Hero, About, Services, Gallery, Team, Booking, …
-  three/                 # React Three Fiber hero scene
-  interactive/           # cursor, magnetic, tilt, counter, signature CTA
+  sections/home/         # Home page sections (hero, stats, capabilities, …)
+  pages/                 # full page compositions for inner routes
+  three/                 # React Three Fiber robot scene
+  assistant/             # the Vex AI assistant
+  interactive/           # cursor, magnetic, tilt, counter, glow button
   media/                 # SmartImage, ParallaxImage, AmbientVideo
   typography/            # masked reveal + section heading primitives
-  layout/                # navbar, footer, grain, marquee, scroll progress
-  providers/             # Lenis ↔ GSAP smooth-scroll provider
-lib/                     # design-token helpers, gsap setup, content & media data
+  layout/                # navbar, footer, particle field, marquee, progress
+  providers/             # Lenis and GSAP smooth scroll provider
+lib/                     # site, robots, solutions, research, careers, assistant data
 ```

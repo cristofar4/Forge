@@ -1,22 +1,22 @@
 import { cn } from "@/lib/utils";
 
 const WORDS = [
+  "Autonomy",
+  "Perception",
+  "Locomotion",
+  "Intelligence",
   "Precision",
-  "Ritual",
-  "Craftsmanship",
-  "Transformation",
-  "Heritage",
-  "Mayfair",
+  "Scale",
 ];
 
-/** A slow editorial marquee used as a palate-cleanser between acts. */
+/** A slow technical marquee used as a transition between sections. */
 export function Marquee({ className }: { className?: string }) {
   const Group = () => (
-    <div className="flex shrink-0 items-center gap-12 pr-12">
+    <div className="flex shrink-0 items-center gap-10 pr-10">
       {WORDS.map((w) => (
-        <span key={w} className="flex items-center gap-12">
-          <span className="display text-4xl text-bone/80 md:text-6xl">{w}</span>
-          <span className="text-gold">✦</span>
+        <span key={w} className="flex items-center gap-10">
+          <span className="display text-4xl text-ice/70 md:text-5xl">{w}</span>
+          <span className="text-cyan text-glow">◆</span>
         </span>
       ))}
     </div>
@@ -25,18 +25,14 @@ export function Marquee({ className }: { className?: string }) {
   return (
     <div
       aria-hidden
-      className={cn(
-        "relative overflow-hidden border-y border-bone/10 bg-obsidian py-7",
-        className,
-      )}
+      className={cn("relative overflow-hidden border-y border-ice/10 bg-abyss py-6", className)}
     >
       <div className="flex w-max animate-marquee">
         <Group />
         <Group />
       </div>
-      {/* edge fades */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-obsidian to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-obsidian to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-abyss to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-abyss to-transparent" />
     </div>
   );
 }

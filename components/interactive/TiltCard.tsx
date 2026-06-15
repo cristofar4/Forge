@@ -17,7 +17,7 @@ export function TiltCard({ children, className, intensity = 9 }: Props) {
   const ry = useSpring(useMotionValue(0), { stiffness: 200, damping: 18 });
   const gx = useMotionValue(50);
   const gy = useMotionValue(50);
-  const glare = useMotionTemplate`radial-gradient(220px circle at ${gx}% ${gy}%, rgba(231,207,145,0.18), transparent 60%)`;
+  const glare = useMotionTemplate`radial-gradient(220px circle at ${gx}% ${gy}%, rgba(40,215,251,0.18), transparent 60%)`;
 
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current;
