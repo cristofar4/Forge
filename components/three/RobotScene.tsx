@@ -17,11 +17,12 @@ type Props = {
   by: MotionValue<number>;
   mode: RobotMode;
   phase: DancePhase;
+  style?: string;
 };
 
 const BASE_Y = -0.1;
 
-function Robot({ mx, my, bx, by, mode, phase }: Props) {
+function Robot({ mx, my, bx, by, mode, phase, style }: Props) {
   const root = useRef<THREE.Group>(null);
   const torso = useRef<THREE.Group>(null);
   const head = useRef<THREE.Group>(null);
@@ -112,27 +113,42 @@ function Robot({ mx, my, bx, by, mode, phase }: Props) {
         lp(r.rotation, "y", 0, 0.1); lp(r.rotation, "z", 0, 0.1);
         lp(hd.rotation, "x", 0.32, 0.1);
       } else {
-        // the dance
-        const beat = t * 6, cyc = t % 8;
-        r.rotation.z = Math.sin(beat * 0.5) * 0.12;
-        r.position.x = lerp(r.position.x, Math.sin(beat * 0.25) * 0.5, 0.1);
-        r.position.y = BASE_Y + Math.abs(Math.sin(beat)) * 0.12;
-        if (cyc > 6.5) r.rotation.y += delta * 3.2;
+        // the dance, matched to the song style
+        const sty = style || "afro";
+        const P =
+          sty === "amapiano" ? { tempo: 4.0, sway: 0.55, hipZ: 0.14, bounce: 0.07, low: true, spin: false, knee: 0.6, nod: 0.12, lean: 0.12 }
+          : sty === "hiphop" ? { tempo: 5.6, sway: 0.34, hipZ: 0.1, bounce: 0.15, low: false, spin: false, knee: 0.55, nod: 0.24, lean: 0 }
+          : sty === "pop" ? { tempo: 6.6, sway: 0.42, hipZ: 0.12, bounce: 0.18, low: false, spin: true, knee: 0.5, nod: 0.16, lean: 0 }
+          : { tempo: 5.0, sway: 0.5, hipZ: 0.17, bounce: 0.1, low: true, spin: false, knee: 0.5, nod: 0.18, lean: 0 }; // afro
+        const beat = t * P.tempo, cyc = t % 8;
+
+        r.rotation.z = Math.sin(beat * 0.5) * P.hipZ;
+        r.position.x = lerp(r.position.x, Math.sin(beat * 0.25) * P.sway, 0.1);
+        r.position.y = BASE_Y + Math.abs(Math.sin(beat)) * P.bounce;
+        if (P.spin && cyc > 6.3) r.rotation.y += delta * 3.4;
         else lp(r.rotation, "y", 0, 0.08);
 
-        const raise = cyc > 3.6 && cyc < 5;
+        const raise = sty === "pop" ? cyc > 3.4 && cyc < 4.8 : sty === "hiphop" ? cyc > 5.6 && cyc < 6.4 : false;
         if (raise) {
-          lp(A.rotation, "x", -2.5, 0.2); lp(B.rotation, "x", -2.5, 0.2);
-          lp(A.rotation, "z", 0.5, 0.2); lp(B.rotation, "z", -0.5, 0.2);
+          A.rotation.x = -2.5; B.rotation.x = -2.5; A.rotation.z = 0.5; B.rotation.z = -0.5;
+          EA.rotation.x = -0.2; EB.rotation.x = -0.2;
+        } else if (P.low) {
+          // afro / amapiano: relaxed arms out to the sides, swaying
+          A.rotation.x = 0.2 + Math.sin(beat) * 0.25; B.rotation.x = 0.2 - Math.sin(beat) * 0.25;
+          A.rotation.z = 0.55 + Math.sin(beat * 0.5) * 0.2; B.rotation.z = -0.55 - Math.sin(beat * 0.5) * 0.2;
+          EA.rotation.x = -0.5; EB.rotation.x = -0.5;
         } else {
-          A.rotation.x = Math.sin(beat) * -0.8 - 0.3; B.rotation.x = Math.sin(beat + Math.PI) * -0.8 - 0.3;
-          A.rotation.z = 0.3 + Math.sin(beat * 0.5) * 0.3; B.rotation.z = -0.3 - Math.sin(beat * 0.5) * 0.3;
+          // hiphop / pop: arm pumps
+          A.rotation.x = Math.sin(beat) * -1.0 - 0.2; B.rotation.x = Math.sin(beat + Math.PI) * -1.0 - 0.2;
+          A.rotation.z = 0.2 + Math.sin(beat * 0.5) * 0.3; B.rotation.z = -0.2 - Math.sin(beat * 0.5) * 0.3;
+          EA.rotation.x = -0.8 - Math.abs(Math.sin(beat)) * 0.4; EB.rotation.x = -0.8 - Math.abs(Math.cos(beat)) * 0.4;
         }
-        EA.rotation.x = -0.6 - Math.abs(Math.sin(beat)) * 0.5; EB.rotation.x = -0.6 - Math.abs(Math.cos(beat)) * 0.5;
-        HA.rotation.x = Math.sin(beat) * 0.3; HB.rotation.x = Math.sin(beat + Math.PI) * 0.3;
-        KA.rotation.x = Math.abs(Math.sin(beat)) * 0.7; KB.rotation.x = Math.abs(Math.cos(beat)) * 0.7;
-        hd.rotation.x = Math.sin(beat) * 0.15; hd.rotation.y = Math.sin(beat * 0.5) * 0.2; hd.rotation.z = Math.sin(beat * 0.5) * 0.1;
-        lp(ts.rotation, "x", 0, 0.1);
+
+        const hipAmp = sty === "hiphop" ? 0.4 : 0.3;
+        HA.rotation.x = Math.sin(beat) * hipAmp; HB.rotation.x = Math.sin(beat + Math.PI) * hipAmp;
+        KA.rotation.x = Math.abs(Math.sin(beat)) * P.knee; KB.rotation.x = Math.abs(Math.cos(beat)) * P.knee;
+        hd.rotation.x = Math.sin(beat) * P.nod; hd.rotation.y = Math.sin(beat * 0.5) * 0.18; hd.rotation.z = Math.sin(beat * 0.5) * 0.08;
+        lp(ts.rotation, "x", P.lean, 0.1);
       }
 
       // speaker placement

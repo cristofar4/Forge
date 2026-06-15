@@ -229,6 +229,8 @@ export function HeroExperience() {
   ];
 
   const songName = SONGS.find((s) => s.id === song)?.name ?? "";
+  const danceStyle = SONGS.find((s) => s.id === song)?.style ?? "";
+  const regions = ["Nigeria", "United States"] as const;
 
   return (
     <section className="relative min-h-screen overflow-hidden pt-28 md:pt-24">
@@ -261,7 +263,8 @@ export function HeroExperience() {
                   )}
                 </motion.div>
               ) : (
-                <motion.div key="console" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4, ease: EASE }} className="rounded-3xl glass-strong p-6 md:p-8">
+                <motion.div key="console" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4, ease: EASE }} className="fixed inset-x-0 bottom-0 z-40 max-h-[82dvh] overflow-y-auto rounded-t-3xl glass-strong p-5 lg:static lg:inset-auto lg:z-auto lg:max-h-none lg:overflow-visible lg:rounded-3xl lg:p-8">
+                  <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-ice/20 lg:hidden" />
                   <div className="flex items-center justify-between">
                     <span className="eyebrow flex items-center gap-2"><Bot className="h-4 w-4" /> Vex · Live</span>
                     <button onClick={release} data-cursor className="text-xs uppercase tracking-[0.16em] text-fade hover:text-cyan">Let me scroll →</button>
@@ -280,12 +283,21 @@ export function HeroExperience() {
                   )}
 
                   {mode === "dance" && (
-                    <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                      {SONGS.map((s) => (
-                        <button key={s.id} onClick={() => performSong(s.id)} data-cursor className="group flex items-center gap-3 rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-left transition-colors hover:border-cyan/50 hover:bg-cyan/[0.06]">
-                          <Play className="h-4 w-4 shrink-0 text-cyan" strokeWidth={1.6} />
-                          <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.vibe}</span></span>
-                        </button>
+                    <div className="mt-6 space-y-5">
+                      {regions.map((region) => (
+                        <div key={region}>
+                          <p className="eyebrow mb-2.5 flex items-center gap-2">
+                            <span className="h-px w-5 bg-cyan/40" /> {region}
+                          </p>
+                          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                            {SONGS.filter((s) => s.region === region).map((s) => (
+                              <button key={s.id} onClick={() => performSong(s.id)} data-cursor className="group flex items-center gap-3 rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-left transition-colors hover:border-cyan/50 hover:bg-cyan/[0.06]">
+                                <Play className="h-4 w-4 shrink-0 text-cyan" strokeWidth={1.6} />
+                                <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.vibe}</span></span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -352,7 +364,7 @@ export function HeroExperience() {
         {/* RIGHT (or full stage): the robot */}
         <div ref={robotBox} className={cn("relative", staged ? "order-1 mx-auto h-[70vh] min-h-[420px] w-full max-w-4xl lg:h-[86vh]" : "order-1 h-[44vh] min-h-[320px] lg:order-2 lg:h-[82vh]")}>
           {!reduced ? (
-            <RobotScene mx={mx} my={my} bx={bx} by={by} mode={mode} phase={phase} />
+            <RobotScene mx={mx} my={my} bx={bx} by={by} mode={mode} phase={phase} style={danceStyle} />
           ) : (
             <SmartImage src={img.humanoid} alt="Forge humanoid robot" reveal={false} className="h-full w-full opacity-80" />
           )}

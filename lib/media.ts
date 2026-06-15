@@ -1,42 +1,38 @@
 /**
- * Real photography referenced from public CDNs and loaded directly in the
- * visitor's browser. Each image flows through <SmartImage>, which renders a
- * branded glass fallback if a URL is ever unreachable, so the layout never breaks.
+ * Real photography loaded directly in the visitor's browser. We use a themed
+ * image source with a deterministic seed so the same picture loads every time.
+ * <SmartImage> falls back to a second real source, then a branded panel, so a
+ * picture always appears.
  */
 
-const ux = (id: string, w = 1600) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=${w}`;
+const lf = (kw: string, lock: number, w = 1280, h = 920) =>
+  `https://loremflickr.com/${w}/${h}/${encodeURIComponent(kw)}?lock=${lock}`;
 
 export const img = {
-  // Atmosphere
-  heroAtmos: ux("1535378620166-273708d44e4c", 2000),
-  circuit: ux("1518770660439-4636190af475", 1800),
-  dataCore: ux("1620712943543-bcc4688e7485", 1600),
+  heroAtmos: lf("robot,technology", 21, 1600, 1100),
+  circuit: lf("circuit,technology", 22),
+  dataCore: lf("server,data,center", 23),
 
-  // Robots / humanoids
-  humanoid: ux("1561557944-6e7860d1a7eb", 1600),
-  humanoidB: ux("1620712943543-bcc4688e7485", 1400),
-  armFactory: ux("1565514020179-026b92b84bb6", 1600),
-  cobot: ux("1581092160562-40aa08e78837", 1600),
-  drone: ux("1473968512647-3e447244af8f", 1400),
-  medical: ux("1581595219315-a187dd40c322", 1500),
-  logistics: ux("1586528116311-ad8dd3c8310d", 1600),
-  security: ux("1563207153-f403bf289096", 1400),
+  humanoid: lf("robot,humanoid", 31),
+  humanoidB: lf("robot,android", 32),
+  armFactory: lf("robot,factory,arm", 33),
+  cobot: lf("robot,industrial", 34),
+  drone: lf("drone,technology", 35),
+  medical: lf("medical,technology", 36),
+  logistics: lf("warehouse,logistics", 37),
+  security: lf("security,camera", 38),
 
-  // Research / lab
-  lab: ux("1581091226825-a6a2a5aee158", 1600),
-  vision: ux("1535378917042-10a22c95931a", 1500),
-  neural: ux("1551288049-bebda4e38f71", 1500),
-  engineer: ux("1581092918056-0c4c3acd3789", 1500),
+  lab: lf("laboratory,technology", 41),
+  vision: lf("camera,lens,technology", 42),
+  neural: lf("network,technology,abstract", 43),
+  engineer: lf("engineer,technology", 44),
 
-  // Smart cities / industry
-  city: ux("1480714378408-67cf0d13bc1b", 1800),
-  factory: ux("1504917595217-d4dc5ebe6122", 1600),
+  city: lf("city,night,skyline", 51),
+  factory: lf("factory,industrial", 52),
 
-  // People / culture
-  team: ux("1522071820081-009f0129c71c", 1600),
-  culture: ux("1531482615713-2afd69097998", 1600),
-  workshop: ux("1559136555-9303baea8ebd", 1500),
+  team: lf("team,office,technology", 61),
+  culture: lf("office,people,technology", 62),
+  workshop: lf("workshop,engineering", 63),
 } as const;
 
 export type GalleryItem = {
@@ -49,22 +45,16 @@ export type GalleryItem = {
 };
 
 export const galleryItems: GalleryItem[] = [
-  { id: "p1", src: img.humanoid, title: "Atlas X in motion", category: "Humanoid", tall: true },
-  { id: "p2", src: img.armFactory, title: "Titan assembly cell", category: "Industrial", wide: true },
-  { id: "p3", src: img.lab, title: "Perception lab", category: "Research" },
-  { id: "p4", src: img.cobot, title: "Collaborative line", category: "Industrial" },
-  { id: "p5", src: img.vision, title: "Machine vision array", category: "Research", tall: true },
-  { id: "p6", src: img.logistics, title: "Logistics One fleet", category: "Field", wide: true },
-  { id: "p7", src: img.humanoidB, title: "Nova interaction study", category: "Humanoid" },
-  { id: "p8", src: img.drone, title: "Aerial survey unit", category: "Field" },
-  { id: "p9", src: img.neural, title: "Neural core training", category: "Research" },
-  { id: "p10", src: img.factory, title: "Munich gigafactory", category: "Industrial", tall: true },
-  { id: "p11", src: img.security, title: "Guardian night patrol", category: "Field" },
-  { id: "p12", src: img.engineer, title: "Calibration bay", category: "Research", wide: true },
+  { id: "p1", src: lf("robot,humanoid", 71), title: "Atlas X in motion", category: "Humanoid", tall: true },
+  { id: "p2", src: lf("robot,factory,arm", 72), title: "Titan assembly cell", category: "Industrial", wide: true },
+  { id: "p3", src: lf("laboratory,technology", 73), title: "Perception lab", category: "Research" },
+  { id: "p4", src: lf("robot,industrial", 74), title: "Collaborative line", category: "Industrial" },
+  { id: "p5", src: lf("camera,lens,technology", 75), title: "Machine vision array", category: "Research", tall: true },
+  { id: "p6", src: lf("warehouse,logistics", 76), title: "Logistics One fleet", category: "Field", wide: true },
+  { id: "p7", src: lf("robot,android", 77), title: "Nova interaction study", category: "Humanoid" },
+  { id: "p8", src: lf("drone,technology", 78), title: "Aerial survey unit", category: "Field" },
+  { id: "p9", src: lf("network,technology,abstract", 79), title: "Neural core training", category: "Research" },
+  { id: "p10", src: lf("factory,industrial", 80), title: "Munich gigafactory", category: "Industrial", tall: true },
+  { id: "p11", src: lf("security,camera", 81), title: "Guardian night patrol", category: "Field" },
+  { id: "p12", src: lf("engineer,technology", 82), title: "Calibration bay", category: "Research", wide: true },
 ];
-
-/** Real ambient video over a real poster; degrades to the poster if blocked. */
-export const ambientVideo = {
-  src: "https://assets.mixkit.co/videos/preview/mixkit-robotic-arm-working-in-a-factory-44900-large.mp4",
-  poster: img.armFactory,
-};

@@ -1,21 +1,50 @@
-/** Self contained Web Audio songs, so the robot can perform with no asset files. */
+/**
+ * Self contained Web Audio songs, so the robot can perform with no asset files.
+ * Each track carries a region and a dance style so the robot matches its moves
+ * to the music. Melodies are original and evoke the genre, they are not the
+ * copyrighted recordings.
+ */
+
+export type DanceStyle = "afro" | "amapiano" | "hiphop" | "pop";
+
+export type Song = {
+  id: string;
+  name: string;
+  region: "Nigeria" | "United States";
+  style: DanceStyle;
+  vibe: string;
+};
 
 type Pattern = { steps: number[]; tempo: number; type: OscillatorType; base: number };
 
-// Each song is a loop of semitone offsets over a base frequency, at its own tempo.
 const PATTERNS: Record<string, Pattern> = {
-  neon: { steps: [0, 7, 12, 7, 15, 12, 19, 12], tempo: 0.2, type: "triangle", base: 220 },
-  circuit: { steps: [0, 3, 7, 10, 12, 10, 7, 3], tempo: 0.17, type: "sawtooth", base: 196 },
-  gravity: { steps: [0, 0, 12, 0, 10, 0, 7, 5], tempo: 0.24, type: "square", base: 165 },
-  voltage: { steps: [0, 12, 7, 12, 15, 19, 15, 12], tempo: 0.15, type: "triangle", base: 247 },
+  // Nigeria
+  "afro-calm": { steps: [0, 2, 4, 7, 9, 7, 4, 2], tempo: 0.2, type: "triangle", base: 220 },
+  amapiano: { steps: [0, 0, 3, 5, 7, 5, 3, 0], tempo: 0.26, type: "sine", base: 165 },
+  "afro-street": { steps: [0, 4, 7, 12, 7, 9, 7, 4], tempo: 0.16, type: "sawtooth", base: 247 },
+  // United States
+  westcoast: { steps: [0, 3, 5, 7, 10, 7, 5, 3], tempo: 0.22, type: "sawtooth", base: 196 },
+  stadium: { steps: [0, 4, 7, 12, 7, 4, 0, 7], tempo: 0.15, type: "triangle", base: 262 },
+  nightdrive: { steps: [0, 0, 0, 3, 0, 7, 5, 3], tempo: 0.2, type: "square", base: 175 },
 };
+
+export const SONGS: Song[] = [
+  { id: "afro-calm", name: "Calm Sway", region: "Nigeria", style: "afro", vibe: "Smooth Afrobeats, the calm mood" },
+  { id: "amapiano", name: "Lagos Amapiano", region: "Nigeria", style: "amapiano", vibe: "Deep log drum groove" },
+  { id: "afro-street", name: "Naija Bounce", region: "Nigeria", style: "afro", vibe: "Upbeat street Afro pop" },
+  { id: "westcoast", name: "West Coast", region: "United States", style: "hiphop", vibe: "Laid back hip hop" },
+  { id: "stadium", name: "Stadium Lights", region: "United States", style: "pop", vibe: "Big stadium pop energy" },
+  { id: "nightdrive", name: "Night Drive", region: "United States", style: "hiphop", vibe: "Moody trap" },
+];
+
+export const songById = (id: string) => SONGS.find((s) => s.id === id);
 
 export type SongHandle = { stop: () => void };
 
 const midi = (base: number, semi: number) => base * Math.pow(2, semi / 12);
 
-export function playSong(songId = "neon", onBeat?: () => void): SongHandle {
-  const p = PATTERNS[songId] ?? PATTERNS.neon;
+export function playSong(songId = "afro-calm", onBeat?: () => void): SongHandle {
+  const p = PATTERNS[songId] ?? PATTERNS["afro-calm"];
   const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   const ctx = new Ctor();
   const master = ctx.createGain();
@@ -42,19 +71,22 @@ export function playSong(songId = "neon", onBeat?: () => void): SongHandle {
       osc.start(t0);
       osc.stop(t0 + p.tempo);
     });
-    // kick on the down beat
-    const kick = ctx.createOscillator();
-    const kg = ctx.createGain();
-    kick.type = "sine";
-    kick.frequency.setValueAtTime(140, start);
-    kick.frequency.exponentialRampToValueAtTime(50, start + 0.12);
-    kg.gain.setValueAtTime(0.0001, start);
-    kg.gain.exponentialRampToValueAtTime(0.6, start + 0.01);
-    kg.gain.exponentialRampToValueAtTime(0.0001, start + 0.3);
-    kick.connect(kg);
-    kg.connect(master);
-    kick.start(start);
-    kick.stop(start + 0.35);
+    // kick on each down beat
+    [0, p.steps.length / 2].forEach((i) => {
+      const kick = ctx.createOscillator();
+      const kg = ctx.createGain();
+      const t0 = start + i * p.tempo;
+      kick.type = "sine";
+      kick.frequency.setValueAtTime(150, t0);
+      kick.frequency.exponentialRampToValueAtTime(50, t0 + 0.12);
+      kg.gain.setValueAtTime(0.0001, t0);
+      kg.gain.exponentialRampToValueAtTime(0.7, t0 + 0.01);
+      kg.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+      kick.connect(kg);
+      kg.connect(master);
+      kick.start(t0);
+      kick.stop(t0 + 0.35);
+    });
   };
 
   const loop = () => {
@@ -79,10 +111,3 @@ export function playSong(songId = "neon", onBeat?: () => void): SongHandle {
     },
   };
 }
-
-export const SONGS: { id: string; name: string; vibe: string }[] = [
-  { id: "neon", name: "Neon Pulse", vibe: "Uplifting synth" },
-  { id: "circuit", name: "Circuit Funk", vibe: "Groovy bassline" },
-  { id: "gravity", name: "Gravity Drop", vibe: "Heavy and slow" },
-  { id: "voltage", name: "Voltage", vibe: "Fast and bright" },
-];
