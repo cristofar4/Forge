@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="80%"><stop offset="0%" stop-color="#13202e"/><stop offset="55%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cdd8e6"/><stop offset="100%" stop-color="#7e8da3"/></linearGradient>
+    <linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1b2433"/><stop offset="100%" stop-color="#0d121b"/></linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1"><path d="M0 150H800M0 300H800M0 450H800M160 0V600M320 0V600M480 0V600M640 0V600"/></g>
+  <ellipse cx="400" cy="540" rx="190" ry="24" fill="#28d7fb" opacity="0.16" filter="url(#gl)"/>
+  <g>
+    <!-- legs (quadruped) -->
+    <path d="M300 360 l-40 150" stroke="url(#dk)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M360 360 l-12 150" stroke="url(#dk)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M460 360 l16 150" stroke="url(#st)" stroke-width="22" stroke-linecap="round"/>
+    <path d="M500 360 l48 150" stroke="url(#st)" stroke-width="22" stroke-linecap="round"/>
+    <!-- body -->
+    <rect x="280" y="280" width="260" height="100" rx="40" fill="url(#st)"/>
+    <rect x="300" y="300" width="220" height="30" rx="14" fill="url(#dk)"/>
+    <!-- neck + sensor head -->
+    <rect x="520" y="220" width="40" height="80" rx="16" fill="url(#dk)" transform="rotate(20 540 260)"/>
+    <rect x="540" y="180" width="120" height="60" rx="22" fill="url(#st)"/>
+    <circle cx="630" cy="210" r="22" fill="#05070b"/>
+    <circle cx="630" cy="210" r="11" fill="#28d7fb" filter="url(#gl)"/>
+    <!-- scan beam -->
+    <path d="M652 210 l120 -30 v60 z" fill="#28d7fb" opacity="0.12"/>
+  </g>
+  <text x="400" y="582" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="5" fill="#28d7fb" opacity="0.7">GUARDIAN SECURITY</text>
+</svg>

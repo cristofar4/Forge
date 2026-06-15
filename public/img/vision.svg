@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="85%"><stop offset="0%" stop-color="#13202e"/><stop offset="60%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1"><path d="M0 150H800M0 300H800M0 450H800M200 0V600M400 0V600M600 0V600"/></g>
+  <!-- eye -->
+  <path d="M250 300 q150 -150 300 0 q-150 150 -300 0 z" fill="none" stroke="#9fb1c6" stroke-width="4"/>
+  <circle cx="400" cy="300" r="78" fill="none" stroke="#28d7fb" stroke-width="4" filter="url(#gl)"/>
+  <circle cx="400" cy="300" r="42" fill="#0a7ea4" opacity="0.5"/>
+  <circle cx="400" cy="300" r="20" fill="#8af2ff" filter="url(#gl)"/>
+  <!-- scan brackets -->
+  <g stroke="#28d7fb" stroke-width="4" fill="none" opacity="0.8">
+    <path d="M250 200 h-40 v40"/><path d="M550 200 h40 v40"/><path d="M250 400 h-40 v-40"/><path d="M550 400 h40 v-40"/>
+  </g>
+  <!-- detection boxes -->
+  <g stroke="#28d7fb" stroke-opacity="0.7" fill="none">
+    <rect x="120" y="150" width="70" height="90" rx="4"/><rect x="610" y="350" width="80" height="70" rx="4"/>
+  </g>
+  <line x1="160" y1="120" x2="640" y2="120" stroke="#28d7fb" stroke-opacity="0.4" stroke-dasharray="6 8"/>
+  <text x="400" y="560" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="6" fill="#28d7fb" opacity="0.7">MACHINE VISION</text>
+</svg>

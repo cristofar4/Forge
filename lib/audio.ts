@@ -41,6 +41,49 @@ export const songById = (id: string) => SONGS.find((s) => s.id === id);
 
 export type SongHandle = { stop: () => void };
 
+/** Real, royalty free audio tracks. Original commercial recordings cannot be
+ * embedded for copyright reasons, so these are real free music tracks. */
+const TRACKS: Record<string, string> = {
+  "afro-calm": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+  amapiano: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+  "afro-street": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+  westcoast: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  stadium: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+  nightdrive: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+};
+
+/** Plays a real audio track. If it cannot load, falls back to the synth engine
+ *  so there is always music for the robot to dance to. */
+export function playTrack(songId = "afro-calm"): SongHandle {
+  const url = TRACKS[songId];
+  let fallback: SongHandle | null = null;
+  let audio: HTMLAudioElement | null = null;
+  const startFallback = () => {
+    if (!fallback) fallback = playSong(songId);
+  };
+  try {
+    audio = new Audio(url);
+    audio.loop = true;
+    audio.volume = 0.55;
+    audio.addEventListener("error", startFallback);
+    const p = audio.play();
+    if (p && typeof p.catch === "function") p.catch(startFallback);
+  } catch {
+    startFallback();
+  }
+  return {
+    stop: () => {
+      try {
+        audio?.pause();
+        if (audio) audio.src = "";
+      } catch {
+        /* noop */
+      }
+      fallback?.stop();
+    },
+  };
+}
+
 const midi = (base: number, semi: number) => base * Math.pow(2, semi / 12);
 
 export function playSong(songId = "afro-calm", onBeat?: () => void): SongHandle {

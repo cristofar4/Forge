@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="80%"><stop offset="0%" stop-color="#13202e"/><stop offset="55%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eaf1f8"/><stop offset="100%" stop-color="#9fb1c6"/></linearGradient>
+    <linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1b2433"/><stop offset="100%" stop-color="#0d121b"/></linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1"><path d="M0 150H800M0 300H800M0 450H800M160 0V600M320 0V600M480 0V600M640 0V600"/></g>
+  <ellipse cx="400" cy="552" rx="150" ry="22" fill="#28d7fb" opacity="0.16" filter="url(#gl)"/>
+  <g>
+    <!-- rounded body on pedestal -->
+    <rect x="356" y="430" width="88" height="90" rx="20" fill="url(#dk)"/>
+    <ellipse cx="400" cy="520" rx="90" ry="20" fill="url(#dk)"/>
+    <rect x="316" y="250" width="168" height="200" rx="60" fill="url(#st)"/>
+    <!-- soft arms -->
+    <rect x="300" y="280" width="30" height="120" rx="15" fill="url(#st)"/>
+    <rect x="470" y="280" width="30" height="120" rx="15" fill="url(#st)"/>
+    <!-- head -->
+    <circle cx="400" cy="180" r="86" fill="url(#st)"/>
+    <rect x="338" y="140" width="124" height="80" rx="38" fill="#05070b"/>
+    <!-- friendly face: eyes + smile waveform -->
+    <circle cx="374" cy="172" r="10" fill="#28d7fb" filter="url(#gl)"/>
+    <circle cx="426" cy="172" r="10" fill="#28d7fb" filter="url(#gl)"/>
+    <path d="M366 196 q34 22 68 0" fill="none" stroke="#28d7fb" stroke-width="5" stroke-linecap="round" filter="url(#gl)"/>
+  </g>
+  <text x="400" y="586" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="5" fill="#28d7fb" opacity="0.7">NOVA ASSISTANT</text>
+</svg>

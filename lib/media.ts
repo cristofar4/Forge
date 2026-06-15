@@ -1,38 +1,34 @@
 /**
- * Real photography loaded directly in the visitor's browser. We use a themed
- * image source with a deterministic seed so the same picture loads every time.
- * <SmartImage> falls back to a second real source, then a branded panel, so a
- * picture always appears.
+ * Local vendored artwork served from /public. Same origin, so it always loads
+ * with no dependency on any external image host. <SmartImage> still keeps a
+ * branded panel as a last resort.
  */
 
-const lf = (kw: string, lock: number, w = 1280, h = 920) =>
-  `https://loremflickr.com/${w}/${h}/${encodeURIComponent(kw)}?lock=${lock}`;
-
 export const img = {
-  heroAtmos: lf("robot,technology", 21, 1600, 1100),
-  circuit: lf("circuit,technology", 22),
-  dataCore: lf("server,data,center", 23),
+  heroAtmos: "/img/atlas.svg",
+  circuit: "/img/neural.svg",
+  dataCore: "/img/neural.svg",
 
-  humanoid: lf("robot,humanoid", 31),
-  humanoidB: lf("robot,android", 32),
-  armFactory: lf("robot,factory,arm", 33),
-  cobot: lf("robot,industrial", 34),
-  drone: lf("drone,technology", 35),
-  medical: lf("medical,technology", 36),
-  logistics: lf("warehouse,logistics", 37),
-  security: lf("security,camera", 38),
+  humanoid: "/img/atlas.svg",
+  humanoidB: "/img/nova.svg",
+  armFactory: "/img/titan.svg",
+  cobot: "/img/factory.svg",
+  drone: "/img/drone.svg",
+  medical: "/img/medi.svg",
+  logistics: "/img/logistics.svg",
+  security: "/img/guardian.svg",
 
-  lab: lf("laboratory,technology", 41),
-  vision: lf("camera,lens,technology", 42),
-  neural: lf("network,technology,abstract", 43),
-  engineer: lf("engineer,technology", 44),
+  lab: "/img/lab.svg",
+  vision: "/img/vision.svg",
+  neural: "/img/neural.svg",
+  engineer: "/img/lab.svg",
 
-  city: lf("city,night,skyline", 51),
-  factory: lf("factory,industrial", 52),
+  city: "/img/city.svg",
+  factory: "/img/factory.svg",
 
-  team: lf("team,office,technology", 61),
-  culture: lf("office,people,technology", 62),
-  workshop: lf("workshop,engineering", 63),
+  team: "/img/neural.svg",
+  culture: "/img/lab.svg",
+  workshop: "/img/factory.svg",
 } as const;
 
 export type GalleryItem = {
@@ -45,16 +41,16 @@ export type GalleryItem = {
 };
 
 export const galleryItems: GalleryItem[] = [
-  { id: "p1", src: lf("robot,humanoid", 71), title: "Atlas X in motion", category: "Humanoid", tall: true },
-  { id: "p2", src: lf("robot,factory,arm", 72), title: "Titan assembly cell", category: "Industrial", wide: true },
-  { id: "p3", src: lf("laboratory,technology", 73), title: "Perception lab", category: "Research" },
-  { id: "p4", src: lf("robot,industrial", 74), title: "Collaborative line", category: "Industrial" },
-  { id: "p5", src: lf("camera,lens,technology", 75), title: "Machine vision array", category: "Research", tall: true },
-  { id: "p6", src: lf("warehouse,logistics", 76), title: "Logistics One fleet", category: "Field", wide: true },
-  { id: "p7", src: lf("robot,android", 77), title: "Nova interaction study", category: "Humanoid" },
-  { id: "p8", src: lf("drone,technology", 78), title: "Aerial survey unit", category: "Field" },
-  { id: "p9", src: lf("network,technology,abstract", 79), title: "Neural core training", category: "Research" },
-  { id: "p10", src: lf("factory,industrial", 80), title: "Munich gigafactory", category: "Industrial", tall: true },
-  { id: "p11", src: lf("security,camera", 81), title: "Guardian night patrol", category: "Field" },
-  { id: "p12", src: lf("engineer,technology", 82), title: "Calibration bay", category: "Research", wide: true },
+  { id: "p1", src: "/img/atlas.svg", title: "Atlas X in motion", category: "Humanoid", tall: true },
+  { id: "p2", src: "/img/titan.svg", title: "Titan assembly cell", category: "Industrial", wide: true },
+  { id: "p3", src: "/img/lab.svg", title: "Perception lab", category: "Research" },
+  { id: "p4", src: "/img/factory.svg", title: "Collaborative line", category: "Industrial" },
+  { id: "p5", src: "/img/vision.svg", title: "Machine vision array", category: "Research", tall: true },
+  { id: "p6", src: "/img/logistics.svg", title: "Logistics One fleet", category: "Field", wide: true },
+  { id: "p7", src: "/img/nova.svg", title: "Nova interaction study", category: "Humanoid" },
+  { id: "p8", src: "/img/drone.svg", title: "Aerial survey unit", category: "Field" },
+  { id: "p9", src: "/img/neural.svg", title: "Neural core training", category: "Research" },
+  { id: "p10", src: "/img/city.svg", title: "Smart city deployment", category: "Field", tall: true },
+  { id: "p11", src: "/img/guardian.svg", title: "Guardian night patrol", category: "Field" },
+  { id: "p12", src: "/img/medi.svg", title: "Medi Care rounds", category: "Research", wide: true },
 ];

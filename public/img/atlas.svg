@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="80%">
+      <stop offset="0%" stop-color="#13202e"/><stop offset="55%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/>
+    </radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eaf1f8"/><stop offset="100%" stop-color="#9fb1c6"/></linearGradient>
+    <linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1b2433"/><stop offset="100%" stop-color="#0d121b"/></linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1">
+    <path d="M0 150H800M0 300H800M0 450H800M160 0V600M320 0V600M480 0V600M640 0V600"/>
+  </g>
+  <ellipse cx="400" cy="548" rx="150" ry="22" fill="#28d7fb" opacity="0.16" filter="url(#gl)"/>
+  <g>
+    <!-- legs -->
+    <rect x="350" y="380" width="42" height="150" rx="18" fill="url(#dk)"/>
+    <rect x="408" y="380" width="42" height="150" rx="18" fill="url(#dk)"/>
+    <rect x="346" y="515" width="54" height="22" rx="8" fill="url(#st)"/>
+    <rect x="400" y="515" width="54" height="22" rx="8" fill="url(#st)"/>
+    <!-- pelvis -->
+    <rect x="344" y="350" width="112" height="48" rx="18" fill="url(#dk)"/>
+    <!-- torso -->
+    <rect x="330" y="210" width="140" height="160" rx="34" fill="url(#st)"/>
+    <circle cx="400" cy="280" r="26" fill="none" stroke="#28d7fb" stroke-width="6" filter="url(#gl)"/>
+    <circle cx="400" cy="280" r="13" fill="#0a7ea4"/>
+    <!-- arms -->
+    <rect x="292" y="222" width="34" height="130" rx="16" fill="url(#st)"/>
+    <rect x="288" y="338" width="40" height="60" rx="14" fill="url(#dk)"/>
+    <rect x="474" y="222" width="34" height="130" rx="16" fill="url(#st)"/>
+    <rect x="472" y="338" width="40" height="60" rx="14" fill="url(#dk)"/>
+    <!-- neck + head -->
+    <rect x="384" y="186" width="32" height="34" rx="10" fill="url(#dk)"/>
+    <rect x="346" y="96" width="108" height="100" rx="34" fill="url(#st)"/>
+    <rect x="362" y="120" width="76" height="52" rx="20" fill="#05070b"/>
+    <rect x="374" y="138" width="22" height="14" rx="7" fill="#28d7fb" filter="url(#gl)"/>
+    <rect x="404" y="138" width="22" height="14" rx="7" fill="#28d7fb" filter="url(#gl)"/>
+    <circle cx="342" cy="146" r="10" fill="url(#dk)"/><circle cx="458" cy="146" r="10" fill="url(#dk)"/>
+  </g>
+  <text x="400" y="586" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="6" fill="#28d7fb" opacity="0.7">ATLAS X</text>
+</svg>

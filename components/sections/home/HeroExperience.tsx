@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useMotionValue, type Variants } from "framer-motion";
 import {
   ArrowDown, Bot, BookOpen, ChevronRight, Cpu, Disc3, Globe, Hand, Lock, MapPin,
-  MonitorSmartphone, Music, Play, RotateCcw, ScanLine, Square, Volleyball, Wand2, Wifi,
+  MonitorSmartphone, Music, Play, RotateCcw, ScanLine, Square, Wand2, Wifi,
 } from "lucide-react";
 import type { RobotMode, DancePhase } from "@/components/three/RobotScene";
 import { GlowButton } from "@/components/interactive/GlowButton";
@@ -13,7 +13,7 @@ import { SmartImage } from "@/components/media/SmartImage";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { speak, stopSpeak } from "@/lib/speech";
 import { gatherClientInfo, getPublicIP, type InfoRow } from "@/lib/clientInfo";
-import { playSong, SONGS, type SongHandle } from "@/lib/audio";
+import { playTrack, SONGS, type SongHandle } from "@/lib/audio";
 import { img } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +60,6 @@ export function HeroExperience() {
   const [magicKey, setMagicKey] = useState(0);
   const [scan, setScan] = useState<InfoRow[]>([]);
   const [ip, setIp] = useState("Locating");
-  const [hits, setHits] = useState(0);
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -70,8 +69,6 @@ export function HeroExperience() {
   const songRef = useRef<SongHandle | null>(null);
   const danceTimers = useRef<number[]>([]);
   const robotBox = useRef<HTMLDivElement>(null);
-  const ballEl = useRef<HTMLButtonElement>(null);
-  const ballState = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
   const modeRef = useRef<RobotMode>("idle");
   const releasedRef = useRef(false);
   modeRef.current = mode;
@@ -152,7 +149,7 @@ export function HeroExperience() {
     stopAll(); setMode("story"); const next = (storyIdx + 1) % stories.length; setStoryIdx(next);
     setBubble("Gather round. Here is one."); speak(stories[next]);
   };
-  const doSong = () => { stopAll(); setMode("song"); setBubble("A little tune, composed in real time."); songRef.current = playSong("neon"); };
+  const doSong = () => { stopAll(); setMode("song"); setBubble("Here is a track. Real music, hit play."); songRef.current = playTrack("westcoast"); };
   const doScan = () => {
     stopAll(); setMode("scan"); setScan(gatherClientInfo()); setIp("Locating");
     setBubble("Scanning your connection. Everything stays secure with me.");
@@ -163,8 +160,6 @@ export function HeroExperience() {
     stopAll(); setMode("magic"); const next = (magicIdx + 1) % magicLines.length; setMagicIdx(next);
     setMagicKey((k) => k + 1); setBubble("Abracadabra!"); speak(magicLines[next], { pitch: 1.1 });
   };
-  const doBall = () => { stopAll(); setMode("ball"); setHits(0); setBubble("Keep your eye on the ball. So will I."); };
-
   // staged dance performance
   const performSong = (id: string) => {
     clearTimers();
@@ -173,7 +168,7 @@ export function HeroExperience() {
     setPhase("walkoff");
     const push = (fn: () => void, ms: number) => danceTimers.current.push(window.setTimeout(fn, ms));
     push(() => setPhase("carryin"), 1700);
-    push(() => { setPhase("drop"); songRef.current = playSong(id); }, 3700);
+    push(() => { setPhase("drop"); songRef.current = playTrack(id); }, 3700);
     push(() => setPhase("dance"), 4900);
     push(() => { setPhase("pickup"); songRef.current?.stop(); songRef.current = null; }, 18000);
     push(() => setPhase("storeoff"), 19200);
@@ -188,44 +183,12 @@ export function HeroExperience() {
     danceTimers.current.push(window.setTimeout(() => { setPhase("none"); setSong(null); setMode("gate"); setBubble("And, scene. What else can I do?"); }, 1700));
   };
 
-  // ball physics
-  useEffect(() => {
-    if (mode !== "ball" || reduced) return;
-    const box = robotBox.current; const el = ballEl.current;
-    if (!box || !el) return;
-    const R = 24; const s = ballState.current;
-    const init = box.getBoundingClientRect();
-    s.x = init.width / 2; s.y = init.height * 0.28; s.vx = (Math.random() * 2 - 1) * 4; s.vy = 0;
-    let raf = 0;
-    const tick = () => {
-      const r = box.getBoundingClientRect();
-      s.vy += 0.55; s.x += s.vx; s.y += s.vy;
-      if (s.x < R) { s.x = R; s.vx = Math.abs(s.vx) * 0.86; }
-      if (s.x > r.width - R) { s.x = r.width - R; s.vx = -Math.abs(s.vx) * 0.86; }
-      if (s.y > r.height - R) { s.y = r.height - R; s.vy = -Math.abs(s.vy) * 0.84; s.vx *= 0.98; if (Math.abs(s.vy) < 2) s.vy = -9 - Math.random() * 4; }
-      if (s.y < R) { s.y = R; s.vy = Math.abs(s.vy) * 0.8; }
-      el.style.transform = `translate(${s.x - R}px, ${s.y - R}px)`;
-      bx.set((s.x / r.width) * 2 - 1);
-      by.set(-((s.y / r.height) * 2 - 1));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [mode, reduced, bx, by]);
-
-  const bumpBall = () => {
-    const s = ballState.current;
-    s.vy = -16 - Math.random() * 4; s.vx += (Math.random() * 2 - 1) * 6;
-    setHits((h) => h + 1);
-  };
-
   const actions = [
     { id: "dance", label: "Dance for me", Icon: Disc3, fn: openDance },
     { id: "story", label: "Tell a robot story", Icon: BookOpen, fn: doStory },
     { id: "song", label: "Play a song", Icon: Music, fn: doSong },
     { id: "scan", label: "Scan my device", Icon: ScanLine, fn: doScan },
     { id: "magic", label: "Do some magic", Icon: Wand2, fn: doMagic },
-    { id: "ball", label: "Play ball", Icon: Volleyball, fn: doBall },
   ];
 
   const songName = SONGS.find((s) => s.id === song)?.name ?? "";
@@ -339,12 +302,6 @@ export function HeroExperience() {
 
                   {mode === "magic" && <p className="mt-6 font-serif text-lg italic leading-relaxed text-cyan-bright">{magicLines[magicIdx]}</p>}
 
-                  {mode === "ball" && (
-                    <div className="mt-6 flex items-center gap-4">
-                      <span className="rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-sm text-mist">Bounces kept alive: <span className="font-mono text-cyan">{hits}</span></span>
-                      <span className="text-xs text-fade">Click the ball to keep it up.</span>
-                    </div>
-                  )}
 
                   {mode !== "gate" && (
                     <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-ice/10 pt-5">
@@ -391,11 +348,6 @@ export function HeroExperience() {
 
           {mode === "magic" && <MagicBurst key={magicKey} />}
 
-          {mode === "ball" && (
-            <button ref={ballEl} onClick={bumpBall} data-cursor data-cursor-text="Bump" aria-label="Bump the ball" className="absolute left-0 top-0 z-20 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-b from-cyan-bright to-cyan-deep shadow-[0_0_24px_rgba(40,215,251,0.8)]">
-              <Volleyball className="h-6 w-6 text-void" strokeWidth={1.6} />
-            </button>
-          )}
         </div>
       </div>
 

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="85%"><stop offset="0%" stop-color="#13202e"/><stop offset="60%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.08" stroke-width="1"><path d="M0 120H800M0 240H800M0 360H800M0 480H800M133 0V600M266 0V600M400 0V600M533 0V600M666 0V600"/></g>
+  <g opacity="0.9">
+    <!-- flask -->
+    <path d="M360 180 v60 l-50 110 a40 40 0 0 0 36 58 h108 a40 40 0 0 0 36 -58 l-50 -110 v-60 z" fill="none" stroke="#9fb1c6" stroke-width="4"/>
+    <path d="M330 320 h140 l24 52 a30 30 0 0 1 -26 44 h-160 a30 30 0 0 1 -26 -44 z" fill="#28d7fb" opacity="0.25"/>
+    <rect x="352" y="166" width="96" height="16" rx="6" fill="#9fb1c6"/>
+    <circle cx="392" cy="360" r="6" fill="#8af2ff" filter="url(#gl)"/>
+    <circle cx="430" cy="392" r="5" fill="#8af2ff" filter="url(#gl)"/>
+    <circle cx="372" cy="396" r="4" fill="#8af2ff" filter="url(#gl)"/>
+  </g>
+  <!-- data nodes -->
+  <g stroke="#28d7fb" stroke-opacity="0.5" fill="#28d7fb">
+    <circle cx="140" cy="160" r="5" filter="url(#gl)"/><circle cx="240" cy="120" r="4"/><circle cx="650" cy="180" r="5" filter="url(#gl)"/><circle cx="600" cy="120" r="4"/>
+    <path d="M140 160 L240 120 M650 180 L600 120" stroke-width="1.5" fill="none"/>
+  </g>
+  <text x="400" y="560" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="6" fill="#28d7fb" opacity="0.7">FORGE LAB</text>
+</svg>

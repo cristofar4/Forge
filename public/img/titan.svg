@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="80%"><stop offset="0%" stop-color="#13202e"/><stop offset="55%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eaf1f8"/><stop offset="100%" stop-color="#9fb1c6"/></linearGradient>
+    <linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1b2433"/><stop offset="100%" stop-color="#0d121b"/></linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1"><path d="M0 150H800M0 300H800M0 450H800M160 0V600M320 0V600M480 0V600M640 0V600"/></g>
+  <ellipse cx="330" cy="552" rx="170" ry="22" fill="#28d7fb" opacity="0.16" filter="url(#gl)"/>
+  <g>
+    <!-- base -->
+    <rect x="250" y="470" width="160" height="60" rx="16" fill="url(#dk)"/>
+    <rect x="300" y="360" width="60" height="120" rx="20" fill="url(#st)"/>
+    <circle cx="330" cy="360" r="34" fill="url(#dk)"/>
+    <!-- arm segment 1 -->
+    <rect x="316" y="200" width="44" height="170" rx="18" fill="url(#st)" transform="rotate(-12 338 285)"/>
+    <circle cx="330" cy="210" r="28" fill="url(#dk)"/>
+    <!-- arm segment 2 -->
+    <rect x="330" y="150" width="220" height="40" rx="18" fill="url(#st)" transform="rotate(18 440 170)"/>
+    <circle cx="520" cy="210" r="24" fill="url(#dk)"/>
+    <!-- gripper -->
+    <path d="M548 196 l40 -8 v16 z" fill="url(#st)"/>
+    <rect x="560" y="206" width="56" height="14" rx="6" fill="url(#dk)" transform="rotate(18 588 213)"/>
+    <path d="M600 222 l34 14 m-30 -2 l30 22" stroke="url(#st)" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <circle cx="585" cy="212" r="9" fill="#28d7fb" filter="url(#gl)"/>
+    <!-- spark -->
+    <circle cx="648" cy="250" r="6" fill="#8af2ff" filter="url(#gl)"/>
+    <circle cx="664" cy="266" r="4" fill="#28d7fb" filter="url(#gl)"/>
+  </g>
+  <text x="400" y="586" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="5" fill="#28d7fb" opacity="0.7">TITAN INDUSTRIAL</text>
+</svg>

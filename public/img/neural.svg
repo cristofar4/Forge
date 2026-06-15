@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="85%"><stop offset="0%" stop-color="#13202e"/><stop offset="60%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.25" stroke-width="1.5">
+    <path d="M140 150 L320 110 L320 300 L140 150 M140 300 L320 110 M140 300 L320 300 M140 450 L320 300 M140 450 L320 490 M320 110 L500 200 M320 300 L500 200 M320 300 L500 400 M320 490 L500 400 M500 200 L660 300 M500 400 L660 300 M500 200 L660 160 M500 400 L660 440"/>
+  </g>
+  <g fill="#28d7fb">
+    <circle cx="140" cy="150" r="9" filter="url(#gl)"/><circle cx="140" cy="300" r="9"/><circle cx="140" cy="450" r="9" filter="url(#gl)"/>
+    <circle cx="320" cy="110" r="11" filter="url(#gl)"/><circle cx="320" cy="300" r="11"/><circle cx="320" cy="490" r="11" filter="url(#gl)"/>
+    <circle cx="500" cy="200" r="11"/><circle cx="500" cy="400" r="11" filter="url(#gl)"/>
+    <circle cx="660" cy="160" r="9"/><circle cx="660" cy="300" r="13" fill="#8af2ff" filter="url(#gl)"/><circle cx="660" cy="440" r="9"/>
+  </g>
+  <text x="400" y="560" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="6" fill="#28d7fb" opacity="0.7">CORTEX CORE</text>
+</svg>

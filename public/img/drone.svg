@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="85%"><stop offset="0%" stop-color="#13202e"/><stop offset="58%" stop-color="#0a0e15"/><stop offset="100%" stop-color="#05070a"/></radialGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cdd8e6"/><stop offset="100%" stop-color="#7e8da3"/></linearGradient>
+    <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g stroke="#28d7fb" stroke-opacity="0.07" stroke-width="1"><path d="M0 150H800M0 300H800M0 450H800M200 0V600M400 0V600M600 0V600"/></g>
+  <ellipse cx="400" cy="500" rx="150" ry="20" fill="#28d7fb" opacity="0.12" filter="url(#gl)"/>
+  <g>
+    <!-- arms -->
+    <path d="M400 280 L250 200 M400 280 L550 200 M400 280 L250 360 M400 280 L550 360" stroke="url(#st)" stroke-width="14" stroke-linecap="round"/>
+    <!-- rotors -->
+    <g fill="none" stroke="#28d7fb" stroke-opacity="0.5" stroke-width="3"><ellipse cx="250" cy="200" rx="60" ry="14"/><ellipse cx="550" cy="200" rx="60" ry="14"/><ellipse cx="250" cy="360" rx="60" ry="14"/><ellipse cx="550" cy="360" rx="60" ry="14"/></g>
+    <g fill="#0d121b" stroke="#9fb1c6" stroke-width="3"><circle cx="250" cy="200" r="14"/><circle cx="550" cy="200" r="14"/><circle cx="250" cy="360" r="14"/><circle cx="550" cy="360" r="14"/></g>
+    <!-- body + gimbal cam -->
+    <rect x="356" y="250" width="88" height="60" rx="18" fill="url(#st)"/>
+    <circle cx="400" cy="320" r="22" fill="#05070b"/><circle cx="400" cy="320" r="11" fill="#28d7fb" filter="url(#gl)"/>
+  </g>
+  <text x="400" y="544" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="6" fill="#28d7fb" opacity="0.7">AERIAL UNIT</text>
+</svg>
