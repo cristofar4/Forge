@@ -1,5 +1,6 @@
 import { IntroLoader } from "@/components/sections/home/IntroLoader";
 import { HeroExperience } from "@/components/sections/home/HeroExperience";
+import { WhatRobotsDo } from "@/components/sections/home/WhatRobotsDo";
 import { Stats } from "@/components/sections/home/Stats";
 import { Capabilities } from "@/components/sections/home/Capabilities";
 import { FeaturedRobots } from "@/components/sections/home/FeaturedRobots";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <IntroLoader />
       <HeroExperience />
+      <WhatRobotsDo />
       <Stats />
       <Capabilities />
       <Marquee />

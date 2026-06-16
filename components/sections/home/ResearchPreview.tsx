@@ -22,7 +22,7 @@ export function ResearchPreview() {
         </div>
 
         <div className="lg:col-span-6">
-          <SectionHeading index="04" eyebrow="Research and innovation" lines={["The mind", "behind the", "machine."]} />
+          <SectionHeading index="05" eyebrow="Research and innovation" lines={["The mind", "behind the", "machine."]} />
           <p className="mt-8 max-w-md text-base leading-relaxed text-mist">
             <SplitWords text="Forge Cortex is our reasoning core, a model that brings perception, language and planning into one. It is how a robot understands what you ask and figures out how to do it." />
           </p>

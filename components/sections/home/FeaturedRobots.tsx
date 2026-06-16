@@ -18,7 +18,7 @@ export function FeaturedRobots() {
     <section className="relative bg-abyss py-24 md:py-36">
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-          <SectionHeading index="02" eyebrow="The lineup" lines={["Meet the", "machines."]} />
+          <SectionHeading index="03" eyebrow="The lineup" lines={["Meet the", "machines."]} />
           <GlowButton href="/robots" variant="ghost" cursorText="All six">View all six robots</GlowButton>
         </div>
 

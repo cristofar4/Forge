@@ -18,7 +18,7 @@ export function Capabilities() {
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <SectionHeading
-            index="01"
+            index="02"
             eyebrow="Built different"
             lines={["Intelligence in", "every joint."]}
           />

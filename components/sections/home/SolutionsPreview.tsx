@@ -12,7 +12,7 @@ export function SolutionsPreview() {
     <section className="relative bg-void py-24 md:py-36">
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-          <SectionHeading index="03" eyebrow="Where we work" lines={["One platform,", "every industry."]} />
+          <SectionHeading index="04" eyebrow="Where we work" lines={["One platform,", "every industry."]} />
           <Link href="/solutions" data-cursor className="group flex items-center gap-2 text-sm text-mist hover:text-cyan">
             All solutions
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

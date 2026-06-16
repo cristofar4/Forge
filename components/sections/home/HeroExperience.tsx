@@ -236,7 +236,7 @@ export function HeroExperience() {
                     <span className="block overflow-hidden"><motion.span variants={lineUp} custom={1} initial="hidden" animate="visible" className="block text-energy">move the world.</motion.span></span>
                   </h1>
                   <motion.p variants={fade} custom={1} initial="hidden" animate="visible" className="mt-7 max-w-xl text-base leading-relaxed text-mist md:text-lg">
-                    Forge builds intelligent robots for industry, healthcare, logistics and beyond, uniting advanced hardware with a reasoning core that understands the physical world.
+                    Forge builds intelligent robots that do real work in the real world. They lift, build, deliver, inspect and stand guard across industry, healthcare, logistics, security and smart cities.
                   </motion.p>
                   <motion.div variants={fade} custom={2} initial="hidden" animate="visible" className="mt-9 flex flex-wrap items-center gap-4">
                     <GlowButton href="/robots" cursorText="View">Explore the robots</GlowButton>
