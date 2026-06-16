@@ -301,6 +301,20 @@
   }
 }
 
+@keyframes reveal-img {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-reveal-img {
+  animation: reveal-img 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .animate-marquee {
   animation: marquee-x 32s linear infinite;
 }
