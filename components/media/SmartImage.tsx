@@ -21,27 +21,21 @@ function seedFrom(s: string) {
 }
 
 /**
- * Loads real photography directly in the browser. If the themed source fails, it
- * falls back to a reliable real photo, and only then to a branded carbon panel,
- * so a picture essentially always appears.
+ * Loads real artwork directly in the browser. The image is shown immediately
+ * (no load gating, which previously left cached images stuck invisible). If a
+ * source fails it swaps to a reliable photo, then a branded panel as a last resort.
  */
-export function SmartImage({ src, alt, className, imgClassName, priority, reveal = true, position = "center" }: Props) {
+export function SmartImage({ src, alt, className, imgClassName, reveal = true, position = "center" }: Props) {
   const fallback = `https://picsum.photos/seed/${seedFrom(src)}/1200/900`;
-  const [stage, setStage] = useState(0); // 0 themed, 1 fallback, 2 panel
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setStage(0);
-    setLoaded(false);
-  }, [src]);
-
+  const [stage, setStage] = useState(0); // 0 source, 1 fallback, 2 panel
+  useEffect(() => setStage(0), [src]);
   const current = stage === 0 ? src : stage === 1 ? fallback : null;
 
   return (
     <motion.div
       initial={reveal ? { clipPath: "inset(100% 0% 0% 0%)" } : false}
       whileInView={reveal ? { clipPath: "inset(0% 0% 0% 0%)" } : undefined}
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: true, amount: 0.05 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn("relative isolate overflow-hidden bg-carbon", className)}
     >
@@ -59,13 +53,8 @@ export function SmartImage({ src, alt, className, imgClassName, priority, reveal
           loading="eager"
           decoding="async"
           referrerPolicy="no-referrer"
-          onLoad={() => setLoaded(true)}
           onError={() => setStage((s) => s + 1)}
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out",
-            loaded ? "opacity-100" : "opacity-0",
-            imgClassName,
-          )}
+          className={cn("absolute inset-0 h-full w-full object-cover", imgClassName)}
           style={{ objectPosition: position }}
         />
       )}

@@ -166,9 +166,10 @@ export function HeroExperience() {
     setSong(id);
     setBubble("");
     setPhase("walkoff");
+    songRef.current = playTrack(id); // music starts first, then the robot performs
     const push = (fn: () => void, ms: number) => danceTimers.current.push(window.setTimeout(fn, ms));
     push(() => setPhase("carryin"), 1700);
-    push(() => { setPhase("drop"); songRef.current = playTrack(id); }, 3700);
+    push(() => setPhase("drop"), 3700);
     push(() => setPhase("dance"), 4900);
     push(() => { setPhase("pickup"); songRef.current?.stop(); songRef.current = null; }, 18000);
     push(() => setPhase("storeoff"), 19200);
@@ -193,7 +194,6 @@ export function HeroExperience() {
 
   const songName = SONGS.find((s) => s.id === song)?.name ?? "";
   const danceStyle = SONGS.find((s) => s.id === song)?.style ?? "";
-  const regions = ["Nigeria", "United States"] as const;
 
   return (
     <section className="relative min-h-screen overflow-hidden pt-28 md:pt-24">
@@ -246,21 +246,12 @@ export function HeroExperience() {
                   )}
 
                   {mode === "dance" && (
-                    <div className="mt-6 space-y-5">
-                      {regions.map((region) => (
-                        <div key={region}>
-                          <p className="eyebrow mb-2.5 flex items-center gap-2">
-                            <span className="h-px w-5 bg-cyan/40" /> {region}
-                          </p>
-                          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                            {SONGS.filter((s) => s.region === region).map((s) => (
-                              <button key={s.id} onClick={() => performSong(s.id)} data-cursor className="group flex items-center gap-3 rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-left transition-colors hover:border-cyan/50 hover:bg-cyan/[0.06]">
-                                <Play className="h-4 w-4 shrink-0 text-cyan" strokeWidth={1.6} />
-                                <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.vibe}</span></span>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                    <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                      {SONGS.map((s) => (
+                        <button key={s.id} onClick={() => performSong(s.id)} data-cursor className="group flex items-center gap-3 rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-left transition-colors hover:border-cyan/50 hover:bg-cyan/[0.06]">
+                          <Play className="h-4 w-4 shrink-0 text-cyan" strokeWidth={1.6} />
+                          <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.vibe}</span></span>
+                        </button>
                       ))}
                     </div>
                   )}
