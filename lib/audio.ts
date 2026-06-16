@@ -10,19 +10,22 @@ export type DanceStyle = "afro" | "amapiano" | "hiphop" | "trap";
 export type Song = {
   id: string;
   name: string;
-  region: "Nigeria" | "United States";
+  artist: string;
   style: DanceStyle;
-  vibe: string;
+  file: string;
 };
 
+// Songs play from /public/music. To add one: drop the mp3 in public/music and
+// add an entry here with its file path and a dance style.
 export const SONGS: Song[] = [
-  { id: "boombap", name: "Boom Bap", region: "United States", style: "hiphop", vibe: "Classic head nod hip hop" },
-  { id: "all-my-life", name: "All My Life", region: "United States", style: "hiphop", vibe: "Soulful rap anthem" },
-  { id: "trap", name: "Trap Mode", region: "United States", style: "trap", vibe: "808s and rolling hats" },
-  { id: "westcoast", name: "West Coast", region: "United States", style: "hiphop", vibe: "G funk bounce" },
-  { id: "naija", name: "Naija Hip Hop", region: "Nigeria", style: "afro", vibe: "Afro rap energy" },
-  { id: "afrobeats", name: "Afrobeats", region: "Nigeria", style: "afro", vibe: "Lagos street groove" },
-  { id: "amapiano", name: "Amapiano", region: "Nigeria", style: "amapiano", vibe: "Deep log drum" },
+  { id: "all-my-life", name: "All My Life", artist: "Lil Durk ft. J. Cole", style: "hiphop", file: "/music/all-my-life.mp3" },
+  { id: "charm", name: "Charm", artist: "Rema", style: "afro", file: "/music/charm.mp3" },
+  { id: "back-outside", name: "Back Outside", artist: "BNXN ft. Sarz", style: "afro", file: "/music/back-outside.mp3" },
+  { id: "asiwaju", name: "Asiwaju", artist: "Ruger", style: "afro", file: "/music/asiwaju.mp3" },
+  { id: "cast", name: "Cast", artist: "Shallipopi ft. Odumodublvck", style: "afro", file: "/music/cast.mp3" },
+  { id: "things-on-things", name: "Things on Things", artist: "Shallipopi", style: "amapiano", file: "/music/things-on-things.mp3" },
+  { id: "digi", name: "Digi III", artist: "Mr Tee ft. Tenorboy", style: "afro", file: "/music/digi.mp3" },
+  { id: "again", name: "Again", artist: "Wande Coal", style: "afro", file: "/music/again.mp3" },
 ];
 
 export const songById = (id: string) => SONGS.find((s) => s.id === id);
@@ -164,12 +167,12 @@ export function playBeat(style: DanceStyle): SongHandle {
 }
 
 /**
- * Plays a song. If you drop a licensed file at /public/audio/<id>.mp3 it plays
- * the real track. Otherwise it falls back to the genre matched beat engine, so
- * there is always music with no copyright concern.
+ * Plays a song from its file in /public/music. If the file cannot load it falls
+ * back to the genre matched beat engine, so there is always music to dance to.
  */
-export function playTrack(songId = "boombap"): SongHandle {
-  const style = songById(songId)?.style ?? "hiphop";
+export function playTrack(songId = "all-my-life"): SongHandle {
+  const song = songById(songId);
+  const style = song?.style ?? "hiphop";
   let stopped = false;
   let beat: SongHandle | null = null;
   let audio: HTMLAudioElement | null = null;
@@ -177,14 +180,18 @@ export function playTrack(songId = "boombap"): SongHandle {
     if (stopped || beat) return;
     beat = playBeat(style);
   };
-  try {
-    audio = new Audio(`/audio/${songId}.mp3`);
-    audio.loop = true;
-    audio.volume = 0.7;
-    audio.addEventListener("error", startBeat, { once: true });
-    const pr = audio.play();
-    if (pr && typeof pr.catch === "function") pr.catch(startBeat);
-  } catch {
+  if (song?.file) {
+    try {
+      audio = new Audio(song.file);
+      audio.loop = true;
+      audio.volume = 0.75;
+      audio.addEventListener("error", startBeat, { once: true });
+      const pr = audio.play();
+      if (pr && typeof pr.catch === "function") pr.catch(startBeat);
+    } catch {
+      startBeat();
+    }
+  } else {
     startBeat();
   }
   return {

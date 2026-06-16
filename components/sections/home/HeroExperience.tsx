@@ -250,7 +250,7 @@ export function HeroExperience() {
                       {SONGS.map((s) => (
                         <button key={s.id} onClick={() => performSong(s.id)} data-cursor className="group flex items-center gap-3 rounded-xl border border-ice/12 bg-ice/[0.03] px-4 py-3 text-left transition-colors hover:border-cyan/50 hover:bg-cyan/[0.06]">
                           <Play className="h-4 w-4 shrink-0 text-cyan" strokeWidth={1.6} />
-                          <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.vibe}</span></span>
+                          <span><span className="block text-sm text-ice">{s.name}</span><span className="block text-[0.7rem] text-fade">{s.artist}</span></span>
                         </button>
                       ))}
                     </div>
