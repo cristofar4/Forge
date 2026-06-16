@@ -22,7 +22,8 @@ export function speak(text: string, opts?: { rate?: number; pitch?: number }) {
   try {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = opts?.rate ?? 0.98;
+    u.lang = "en-US";
+    u.rate = opts?.rate ?? 1.05; // medium pace, the same on mobile and desktop
     u.pitch = opts?.pitch ?? 0.8; // lower pitch reads as a male voice
     const v = pickMaleVoice();
     if (v) u.voice = v;

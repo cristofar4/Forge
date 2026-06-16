@@ -7,7 +7,7 @@ import * as THREE from "three";
 import type { MotionValue } from "framer-motion";
 import { lerp, clamp } from "@/lib/utils";
 
-export type RobotMode = "idle" | "gate" | "dance" | "song" | "magic" | "ball" | "story" | "scan";
+export type RobotMode = "idle" | "gate" | "dance" | "song" | "magic" | "ball" | "story" | "scan" | "diagnostics";
 export type DancePhase = "none" | "walkoff" | "carryin" | "drop" | "dance" | "pickup" | "storeoff" | "return";
 
 type Props = {

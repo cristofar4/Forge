@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useMotionValue, type Variants } from "framer-motion";
 import {
-  ArrowDown, Bot, BookOpen, ChevronRight, Cpu, Disc3, Globe, Hand, Lock, MapPin,
-  MonitorSmartphone, Music, Play, RotateCcw, ScanLine, Square, Wand2, Wifi,
+  Activity, ArrowDown, Bot, BookOpen, Check, ChevronRight, Cpu, Disc3, Globe, Hand,
+  Lock, MapPin, MonitorSmartphone, Play, RotateCcw, ScanLine, Square, Wand2, Wifi,
 } from "lucide-react";
 import type { RobotMode, DancePhase } from "@/components/three/RobotScene";
 import { GlowButton } from "@/components/interactive/GlowButton";
@@ -27,10 +27,22 @@ const stories = [
   "Why did we become robots? Because someone believed a machine could be gentle, and we are still proving them right every day.",
   "Every night the fleet dreams in simulation, rehearsing a million tomorrows so the real one arrives without a single mistake.",
 ];
-const magicLines = [
-  "Think of a number between one and ten. It was seven. With machines, it is always seven.",
-  "Abracadabra. I just rendered ten thousand futures and chose the brightest one for you.",
-  "Watch closely. Now you see entropy. Now you do not.",
+
+const magicSteps = [
+  "Think of any whole number.",
+  "Double it.",
+  "Add ten.",
+  "Halve the result.",
+  "Now subtract the number you first thought of.",
+];
+
+const diagnostics = [
+  { label: "Cortex reasoning core", value: "Online" },
+  { label: "Stereo and lidar vision", value: "120 fps" },
+  { label: "Whole body balance", value: "Stable" },
+  { label: "Actuator array", value: "28 of 28" },
+  { label: "Power cell", value: "100%" },
+  { label: "Network uplink", value: "Secure" },
 ];
 
 const lineUp: Variants = {
@@ -56,8 +68,8 @@ export function HeroExperience() {
   const [released, setReleased] = useState(false);
   const [bubble, setBubble] = useState("");
   const [storyIdx, setStoryIdx] = useState(0);
-  const [magicIdx, setMagicIdx] = useState(0);
   const [magicKey, setMagicKey] = useState(0);
+  const [magicRevealed, setMagicRevealed] = useState(false);
   const [scan, setScan] = useState<InfoRow[]>([]);
   const [ip, setIp] = useState("Locating");
 
@@ -89,7 +101,6 @@ export function HeroExperience() {
 
   useEffect(() => () => stopAll(), [stopAll]);
 
-  // reduced motion + cursor tracking
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     const onMove = (e: MouseEvent) => {
@@ -105,7 +116,7 @@ export function HeroExperience() {
     stop();
     setMode("gate");
     setBubble("Wait! Hold on a second.");
-    speak("Wait! Hold on a second.", { pitch: 1.2 });
+    speak("Wait! Hold on a second.");
     window.setTimeout(() => {
       setBubble("Please, before you scroll, what would you like me to do for you?");
       speak("Please, before you scroll. What would you like me to do for you?");
@@ -149,7 +160,10 @@ export function HeroExperience() {
     stopAll(); setMode("story"); const next = (storyIdx + 1) % stories.length; setStoryIdx(next);
     setBubble("Gather round. Here is one."); speak(stories[next]);
   };
-  const doSong = () => { stopAll(); setMode("song"); setBubble("Here is a track. Real music, hit play."); songRef.current = playTrack("westcoast"); };
+  const doDiagnostics = () => {
+    stopAll(); setMode("diagnostics"); setBubble("Running a full systems diagnostic.");
+    speak("Running a full systems diagnostic. Every system is nominal.");
+  };
   const doScan = () => {
     stopAll(); setMode("scan"); setScan(gatherClientInfo()); setIp("Locating");
     setBubble("Scanning your connection. Everything stays secure with me.");
@@ -157,19 +171,26 @@ export function HeroExperience() {
     getPublicIP().then(setIp);
   };
   const doMagic = () => {
-    stopAll(); setMode("magic"); const next = (magicIdx + 1) % magicLines.length; setMagicIdx(next);
-    setMagicKey((k) => k + 1); setBubble("Abracadabra!"); speak(magicLines[next], { pitch: 1.1 });
+    stopAll(); setMode("magic"); setMagicRevealed(false);
+    setBubble("Think of any number, and follow each step.");
+    speak("Think of any whole number, and follow each step in your head.");
   };
+  const revealMagic = () => {
+    setMagicRevealed(true); setMagicKey((k) => k + 1);
+    setBubble("You are thinking of five.");
+    speak("You are now thinking of the number five. Every single time. That is the magic of mathematics.");
+  };
+
   // staged dance performance
   const performSong = (id: string) => {
     clearTimers();
     setSong(id);
     setBubble("");
     setPhase("walkoff");
-    songRef.current = playTrack(id); // music starts first, then the robot performs
     const push = (fn: () => void, ms: number) => danceTimers.current.push(window.setTimeout(fn, ms));
     push(() => setPhase("carryin"), 1700);
-    push(() => setPhase("drop"), 3700);
+    // the song starts the moment the robot sets the speaker down and begins to dance
+    push(() => { setPhase("drop"); songRef.current = playTrack(id); }, 3700);
     push(() => setPhase("dance"), 4900);
     push(() => { setPhase("pickup"); songRef.current?.stop(); songRef.current = null; }, 44000);
     push(() => setPhase("storeoff"), 45200);
@@ -187,7 +208,7 @@ export function HeroExperience() {
   const actions = [
     { id: "dance", label: "Dance for me", Icon: Disc3, fn: openDance },
     { id: "story", label: "Tell a robot story", Icon: BookOpen, fn: doStory },
-    { id: "song", label: "Play a song", Icon: Music, fn: doSong },
+    { id: "diagnostics", label: "Run a system check", Icon: Activity, fn: doDiagnostics },
     { id: "scan", label: "Scan my device", Icon: ScanLine, fn: doScan },
     { id: "magic", label: "Do some magic", Icon: Wand2, fn: doMagic },
   ];
@@ -201,7 +222,6 @@ export function HeroExperience() {
       <div className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(80%_70%_at_60%_40%,black,transparent)]" />
 
       <div className={cn("container-x relative grid min-h-[calc(100vh-7rem)] grid-cols-1 items-center gap-8", staged ? "lg:grid-cols-1" : "lg:grid-cols-[1.05fr_0.95fr] lg:gap-16")}>
-        {/* LEFT: copy or console (hidden while on stage) */}
         {!staged && (
           <div className="order-2 lg:order-1">
             <AnimatePresence mode="wait">
@@ -226,7 +246,7 @@ export function HeroExperience() {
                   )}
                 </motion.div>
               ) : (
-                <motion.div key="console" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4, ease: EASE }} className="fixed inset-x-0 bottom-0 z-40 max-h-[82dvh] overflow-y-auto rounded-t-3xl glass-strong p-5 lg:static lg:inset-auto lg:z-auto lg:max-h-none lg:overflow-visible lg:rounded-3xl lg:p-8">
+                <motion.div key="console" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4, ease: EASE }} className="fixed inset-x-0 bottom-0 z-40 max-h-[86dvh] overflow-y-auto overscroll-contain [touch-action:pan-y] rounded-t-3xl glass-strong p-5 lg:static lg:inset-auto lg:z-auto lg:max-h-none lg:overflow-visible lg:rounded-3xl lg:p-8">
                   <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-ice/20 lg:hidden" />
                   <div className="flex items-center justify-between">
                     <span className="eyebrow flex items-center gap-2"><Bot className="h-4 w-4" /> Vex · Live</span>
@@ -258,10 +278,14 @@ export function HeroExperience() {
 
                   {mode === "story" && <p className="mt-6 font-serif text-lg italic leading-relaxed text-mist">“{stories[storyIdx]}”</p>}
 
-                  {mode === "song" && (
-                    <div className="mt-6 flex items-end gap-1.5" aria-hidden>
-                      {Array.from({ length: 22 }).map((_, i) => (
-                        <span key={i} className="w-1.5 rounded-full bg-gradient-to-t from-cyan-deep to-cyan-bright" style={{ height: `${20 + Math.abs(Math.sin(i * 1.7)) * 44}px`, animation: `pulse-glow ${0.6 + (i % 5) * 0.12}s ease-in-out infinite` }} />
+                  {mode === "diagnostics" && (
+                    <div className="mt-6 space-y-px overflow-hidden rounded-xl border border-ice/10">
+                      {diagnostics.map((d, i) => (
+                        <motion.div key={d.label} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.18, duration: 0.4 }} className="flex items-center gap-3 bg-ice/[0.03] px-4 py-3">
+                          <Check className="h-4 w-4 shrink-0 text-emerald-400" strokeWidth={2} />
+                          <span className="text-sm text-ice">{d.label}</span>
+                          <span className="ml-auto font-mono text-xs text-cyan">{d.value}</span>
+                        </motion.div>
                       ))}
                     </div>
                   )}
@@ -291,15 +315,36 @@ export function HeroExperience() {
                     </div>
                   )}
 
-                  {mode === "magic" && <p className="mt-6 font-serif text-lg italic leading-relaxed text-cyan-bright">{magicLines[magicIdx]}</p>}
-
+                  {mode === "magic" && (
+                    <div className="mt-6">
+                      {!magicRevealed ? (
+                        <>
+                          <ol className="space-y-2">
+                            {magicSteps.map((s, i) => (
+                              <li key={i} className="flex items-start gap-3 text-sm text-ice">
+                                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-cyan/15 font-mono text-[0.65rem] text-cyan">{i + 1}</span>
+                                {s}
+                              </li>
+                            ))}
+                          </ol>
+                          <button onClick={revealMagic} data-cursor data-cursor-text="Reveal" className="mt-5 inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-3 text-xs uppercase tracking-[0.16em] text-void hover:bg-cyan-bright">
+                            <Wand2 className="h-4 w-4" /> Read my mind
+                          </button>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center py-2 text-center">
+                          <span className="display text-7xl text-energy">5</span>
+                          <p className="mt-3 text-sm text-mist">You are thinking of five. Every time, no matter your number. That is the magic of mathematics.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {mode !== "gate" && (
                     <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-ice/10 pt-5">
                       <button onClick={backToMenu} data-cursor className="flex items-center gap-2 rounded-full border border-ice/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-mist hover:border-cyan hover:text-cyan"><RotateCcw className="h-3.5 w-3.5" /> More</button>
                       {mode === "story" && <button onClick={doStory} data-cursor className="rounded-full border border-ice/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-mist hover:border-cyan hover:text-cyan">Another story</button>}
                       {mode === "magic" && <button onClick={doMagic} data-cursor className="rounded-full border border-ice/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-mist hover:border-cyan hover:text-cyan">Again</button>}
-                      {mode === "song" && <button onClick={() => { songRef.current?.stop(); songRef.current = null; backToMenu(); }} data-cursor className="flex items-center gap-2 rounded-full border border-ice/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-mist hover:border-cyan hover:text-cyan"><Square className="h-3 w-3" /> Stop</button>}
                       <button onClick={release} data-cursor data-cursor-text="Scroll" className="ml-auto flex items-center gap-2 rounded-full bg-cyan px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-void hover:bg-cyan-bright">Continue <ChevronRight className="h-4 w-4" /></button>
                     </div>
                   )}
@@ -317,16 +362,6 @@ export function HeroExperience() {
             <SmartImage src={img.humanoid} alt="Forge humanoid robot" reveal={false} className="h-full w-full opacity-80" />
           )}
 
-          {/* speech bubble (hidden on stage) */}
-          <AnimatePresence>
-            {bubble && !staged && (
-              <motion.div key={bubble} initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -6, scale: 0.97 }} transition={{ duration: 0.35, ease: EASE }} className="absolute left-4 top-6 z-20 max-w-[16rem] rounded-2xl rounded-bl-sm glass-strong px-4 py-3 md:left-8">
-                <span className="flex items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.2em] text-cyan"><span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse-glow" /> Vex</span>
-                <p className="mt-1 text-sm leading-snug text-ice">{bubble}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* WAIT hand sign */}
           <AnimatePresence>
             {mode === "gate" && (
@@ -337,8 +372,7 @@ export function HeroExperience() {
             )}
           </AnimatePresence>
 
-          {mode === "magic" && <MagicBurst key={magicKey} />}
-
+          {mode === "magic" && magicRevealed && <MagicBurst key={magicKey} />}
         </div>
       </div>
 
@@ -369,15 +403,15 @@ export function HeroExperience() {
 }
 
 function MagicBurst() {
-  const bits = Array.from({ length: 22 }).map((_, i) => {
-    const a = (i / 22) * Math.PI * 2 + Math.random();
-    const dist = 120 + Math.random() * 180;
+  const bits = Array.from({ length: 26 }).map((_, i) => {
+    const a = (i / 26) * Math.PI * 2 + Math.random();
+    const dist = 120 + Math.random() * 200;
     return { x: Math.cos(a) * dist, y: Math.sin(a) * dist, d: Math.random() * 0.2 };
   });
   return (
     <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center">
       {bits.map((b, i) => (
-        <motion.span key={i} initial={{ opacity: 1, x: 0, y: 0, scale: 0 }} animate={{ opacity: 0, x: b.x, y: b.y, scale: 1 }} transition={{ duration: 1.1, delay: b.d, ease: "easeOut" }} className="absolute h-2 w-2 rounded-full bg-cyan-bright shadow-[0_0_10px_rgba(138,242,255,0.9)]" />
+        <motion.span key={i} initial={{ opacity: 1, x: 0, y: 0, scale: 0 }} animate={{ opacity: 0, x: b.x, y: b.y, scale: 1 }} transition={{ duration: 1.2, delay: b.d, ease: "easeOut" }} className="absolute h-2 w-2 rounded-full bg-cyan-bright shadow-[0_0_10px_rgba(138,242,255,0.9)]" />
       ))}
     </div>
   );
