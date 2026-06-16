@@ -41,8 +41,8 @@ export function SmartImage({ src, alt, className, imgClassName, priority, reveal
     <motion.div
       initial={reveal ? { clipPath: "inset(100% 0% 0% 0%)" } : false}
       whileInView={reveal ? { clipPath: "inset(0% 0% 0% 0%)" } : undefined}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn("relative isolate overflow-hidden bg-carbon", className)}
     >
       <div aria-hidden className="absolute inset-0 grid place-items-center bg-[radial-gradient(120%_120%_at_30%_20%,#11151d_0%,#0a0c12_55%,#06070a_100%)]">
@@ -56,14 +56,14 @@ export function SmartImage({ src, alt, className, imgClassName, priority, reveal
           key={current}
           src={current}
           alt={alt}
-          loading={priority ? "eager" : "lazy"}
+          loading="eager"
           decoding="async"
           referrerPolicy="no-referrer"
           onLoad={() => setLoaded(true)}
           onError={() => setStage((s) => s + 1)}
           className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-[opacity,transform,filter] duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
-            loaded ? "scale-100 opacity-100 blur-0" : "scale-[1.08] opacity-0 blur-md",
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out",
+            loaded ? "opacity-100" : "opacity-0",
             imgClassName,
           )}
           style={{ objectPosition: position }}

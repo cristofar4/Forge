@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/typography/SectionHeading";
 import { ParallaxImage } from "@/components/media/ParallaxImage";
 import { GlowButton } from "@/components/interactive/GlowButton";
 import { pillars } from "@/lib/research";
+import { img } from "@/lib/media";
 import { SplitWords } from "@/components/typography/Reveal";
 
 export function ResearchPreview() {
@@ -13,8 +14,8 @@ export function ResearchPreview() {
       <div className="container-x grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-6">
           <ParallaxImage
-            src={pillars[0].image}
-            alt="Forge research lab"
+            src={img.humanoid}
+            alt="Forge Atlas X humanoid"
             className="aspect-[5/4] w-full rounded-2xl"
             amount={0.12}
           />

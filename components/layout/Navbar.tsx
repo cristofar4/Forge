@@ -16,12 +16,21 @@ export function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { stop, start } = useSmoothScroll();
+  const { stop, start, scrollTo } = useSmoothScroll();
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 50));
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  // When the Home link or logo is tapped while already on the home page,
+  // scroll back to the top instead of doing nothing.
+  const handleHome = (href: string) => (e: React.MouseEvent) => {
+    if (href === "/" && pathname === "/") {
+      e.preventDefault();
+      scrollTo("#top", 0);
+    }
+  };
 
   const close = () => {
     setOpen(false);
@@ -44,7 +53,7 @@ export function Navbar() {
       >
         <nav className="container-x flex items-center justify-between">
           <Magnetic strength={0.25}>
-            <Link href="/" data-cursor className="flex items-center gap-2.5">
+            <Link href="/" onClick={handleHome("/")} data-cursor className="flex items-center gap-2.5">
               <span className="grid h-7 w-7 place-items-center rounded-md bg-cyan/15 ring-1 ring-cyan/40">
                 <span className="h-2.5 w-2.5 rounded-sm bg-cyan shadow-[0_0_10px_rgba(40,215,251,0.9)]" />
               </span>
@@ -59,6 +68,7 @@ export function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={handleHome(item.href)}
                     data-cursor
                     className={cn(
                       "group relative py-1 text-[0.82rem] transition-colors",
@@ -114,7 +124,7 @@ export function Navbar() {
                   >
                     <Link
                       href={item.href}
-                      onClick={close}
+                      onClick={(e) => { handleHome(item.href)(e); close(); }}
                       className={cn(
                         "flex items-baseline gap-4",
                         isActive(item.href) ? "text-cyan" : "text-ice",

@@ -17,6 +17,7 @@ export type Song = {
 
 export const SONGS: Song[] = [
   { id: "boombap", name: "Boom Bap", region: "United States", style: "hiphop", vibe: "Classic head nod hip hop" },
+  { id: "all-my-life", name: "All My Life", region: "United States", style: "hiphop", vibe: "Soulful rap anthem" },
   { id: "trap", name: "Trap Mode", region: "United States", style: "trap", vibe: "808s and rolling hats" },
   { id: "westcoast", name: "West Coast", region: "United States", style: "hiphop", vibe: "G funk bounce" },
   { id: "naija", name: "Naija Hip Hop", region: "Nigeria", style: "afro", vibe: "Afro rap energy" },
@@ -162,8 +163,40 @@ export function playBeat(style: DanceStyle): SongHandle {
   };
 }
 
-/** Plays the genre matched beat for a song. */
+/**
+ * Plays a song. If you drop a licensed file at /public/audio/<id>.mp3 it plays
+ * the real track. Otherwise it falls back to the genre matched beat engine, so
+ * there is always music with no copyright concern.
+ */
 export function playTrack(songId = "boombap"): SongHandle {
   const style = songById(songId)?.style ?? "hiphop";
-  return playBeat(style);
+  let stopped = false;
+  let beat: SongHandle | null = null;
+  let audio: HTMLAudioElement | null = null;
+  const startBeat = () => {
+    if (stopped || beat) return;
+    beat = playBeat(style);
+  };
+  try {
+    audio = new Audio(`/audio/${songId}.mp3`);
+    audio.loop = true;
+    audio.volume = 0.7;
+    audio.addEventListener("error", startBeat, { once: true });
+    const pr = audio.play();
+    if (pr && typeof pr.catch === "function") pr.catch(startBeat);
+  } catch {
+    startBeat();
+  }
+  return {
+    stop: () => {
+      stopped = true;
+      if (audio) {
+        audio.removeEventListener("error", startBeat);
+        try { audio.pause(); } catch { /* noop */ }
+        audio = null;
+      }
+      beat?.stop();
+      beat = null;
+    },
+  };
 }
