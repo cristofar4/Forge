@@ -166,14 +166,18 @@ export function playBeat(style: DanceStyle): SongHandle {
   };
 }
 
+export type Track = { play: () => void; stop: () => void };
+
 /**
- * Plays a song from its file in /public/music. If the file cannot load it falls
- * back to the genre matched beat engine, so there is always music to dance to.
+ * Prepares a song and starts buffering it immediately, muted, so it is ready to
+ * play with no delay. Call play() to unmute it and start from the top. If the
+ * file cannot load it falls back to the genre matched beat engine.
  */
-export function playTrack(songId = "all-my-life"): SongHandle {
+export function loadTrack(songId = "all-my-life"): Track {
   const song = songById(songId);
   const style = song?.style ?? "hiphop";
   let stopped = false;
+  let started = false;
   let beat: SongHandle | null = null;
   let audio: HTMLAudioElement | null = null;
   const startBeat = () => {
@@ -184,21 +188,30 @@ export function playTrack(songId = "all-my-life"): SongHandle {
     try {
       audio = new Audio(song.file);
       audio.loop = true;
-      audio.volume = 0.75;
-      audio.addEventListener("error", startBeat, { once: true });
-      const pr = audio.play();
-      if (pr && typeof pr.catch === "function") pr.catch(startBeat);
+      audio.preload = "auto";
+      audio.muted = true; // buffer silently until play() is called
+      audio.volume = 0.78;
+      audio.addEventListener("error", () => { if (started) startBeat(); }, { once: true });
+      audio.play().catch(() => { /* retried on play() */ });
     } catch {
-      startBeat();
+      audio = null;
     }
-  } else {
-    startBeat();
   }
   return {
+    play: () => {
+      started = true;
+      if (audio) {
+        audio.muted = false;
+        try { audio.currentTime = 0; } catch { /* noop */ }
+        const pr = audio.play();
+        if (pr && typeof pr.catch === "function") pr.catch(startBeat);
+      } else {
+        startBeat();
+      }
+    },
     stop: () => {
       stopped = true;
       if (audio) {
-        audio.removeEventListener("error", startBeat);
         try { audio.pause(); } catch { /* noop */ }
         audio = null;
       }

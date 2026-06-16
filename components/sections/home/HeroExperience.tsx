@@ -13,7 +13,7 @@ import { SmartImage } from "@/components/media/SmartImage";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { speak, stopSpeak } from "@/lib/speech";
 import { gatherClientInfo, getPublicIP, type InfoRow } from "@/lib/clientInfo";
-import { playTrack, SONGS, type SongHandle } from "@/lib/audio";
+import { loadTrack, SONGS, type Track } from "@/lib/audio";
 import { img } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +78,7 @@ export function HeroExperience() {
   const bx = useMotionValue(0);
   const by = useMotionValue(0);
 
-  const songRef = useRef<SongHandle | null>(null);
+  const songRef = useRef<Track | null>(null);
   const danceTimers = useRef<number[]>([]);
   const robotBox = useRef<HTMLDivElement>(null);
   const modeRef = useRef<RobotMode>("idle");
@@ -187,15 +187,18 @@ export function HeroExperience() {
     setSong(id);
     setBubble("");
     setPhase("walkoff");
+    // Preload and buffer the track immediately (muted) so there is no delay; it
+    // unmutes and starts the instant the robot sets the speaker down to dance.
+    const track = loadTrack(id);
+    songRef.current = track;
     const push = (fn: () => void, ms: number) => danceTimers.current.push(window.setTimeout(fn, ms));
     push(() => setPhase("carryin"), 1700);
-    // the song starts the moment the robot sets the speaker down and begins to dance
-    push(() => { setPhase("drop"); songRef.current = playTrack(id); }, 3700);
+    push(() => { setPhase("drop"); track.play(); }, 3700);
     push(() => setPhase("dance"), 4900);
-    push(() => { setPhase("pickup"); songRef.current?.stop(); songRef.current = null; }, 44000);
-    push(() => setPhase("storeoff"), 45200);
-    push(() => setPhase("return"), 46900);
-    push(() => { setPhase("none"); setSong(null); setMode("gate"); setBubble("That was a blast. What else?"); }, 48600);
+    push(() => { setPhase("pickup"); track.stop(); songRef.current = null; }, 22000);
+    push(() => setPhase("storeoff"), 23200);
+    push(() => setPhase("return"), 24900);
+    push(() => { setPhase("none"); setSong(null); setMode("gate"); setBubble("That was a blast. What else?"); }, 26600);
   };
   const stopShow = () => {
     clearTimers();
