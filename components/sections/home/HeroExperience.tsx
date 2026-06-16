@@ -195,10 +195,10 @@ export function HeroExperience() {
     push(() => setPhase("carryin"), 1700);
     push(() => { setPhase("drop"); track.play(); }, 3700);
     push(() => setPhase("dance"), 4900);
-    push(() => { setPhase("pickup"); track.stop(); songRef.current = null; }, 22000);
-    push(() => setPhase("storeoff"), 23200);
-    push(() => setPhase("return"), 24900);
-    push(() => { setPhase("none"); setSong(null); setMode("gate"); setBubble("That was a blast. What else?"); }, 26600);
+    push(() => { setPhase("pickup"); track.stop(); songRef.current = null; }, 34000);
+    push(() => setPhase("storeoff"), 35200);
+    push(() => setPhase("return"), 36900);
+    push(() => { setPhase("none"); setSong(null); setMode("gate"); setBubble("That was a blast. What else?"); }, 38600);
   };
   const stopShow = () => {
     clearTimers();
